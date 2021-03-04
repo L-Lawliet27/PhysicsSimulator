@@ -1,6 +1,7 @@
 package simulator.factories;
 
 import org.json.JSONObject;
+import simulator.control.MassEqualStates;
 import simulator.control.StateComparator;
 
 public class MassEqualStatesBuilder<T> extends Builder<StateComparator> {
@@ -11,7 +12,10 @@ public class MassEqualStatesBuilder<T> extends Builder<StateComparator> {
 
     @Override
     protected StateComparator instanceOf(JSONObject data) {
-        return null;
+
+        if(!data.isEmpty()) throw new IllegalArgumentException("Data is not Empty");
+
+        return new MassEqualStates();
     }
 
     @Override
