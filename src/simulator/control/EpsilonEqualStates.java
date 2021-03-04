@@ -56,20 +56,30 @@ public class EpsilonEqualStates implements StateComparator {
 
 
     private boolean neq(int i, JSONArray ja1, JSONArray ja2){
+
         return !ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id"));
     }
 
     private boolean deq(String s, int i, JSONArray ja1, JSONArray ja2){
         if(s.equals("m")){
-            double m1 = ja1.getJSONObject(i).getDouble(s);
-            double m2 = ja2.getJSONObject(i).getDouble(s);
-            return !equal(m1,m2);
+            try {
+                double m1 = ja1.getJSONObject(i).getDouble(s);
+                double m2 = ja2.getJSONObject(i).getDouble(s);
+                return !equal(m1, m2);
+            }catch (NumberFormatException e){
+                throw new IllegalArgumentException();
+            }
         }//if
 
-        Vector2D v1 =  new Vector2D(cord(ja1,i,s,0), cord(ja1,i,s,1));
-        Vector2D v2 =  new Vector2D(cord(ja2,i,s,0), cord(ja2,i,s,1));
-        return !equal(v1,v2);
+        try {
 
+            Vector2D v1 = new Vector2D(cord(ja1, i, s, 0), cord(ja1, i, s, 1));
+            Vector2D v2 = new Vector2D(cord(ja2, i, s, 0), cord(ja2, i, s, 1));
+            return !equal(v1, v2);
+
+        }catch (NullPointerException | NumberFormatException e){
+            throw new IllegalArgumentException();
+        }
     }
 
     private double cord(JSONArray j, int i, String s, int c){
