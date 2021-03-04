@@ -19,10 +19,10 @@ public class NewtonUniversalGravitation implements ForceLaws{
         Iterator<Body> it = bs.iterator();
 
         while(it.hasNext()){
+            Body o = it.next();
             for (Body b : bs) {
-                if (!b.equals(it.next())) {
-                    it.next().addForce(forceApplied(it.next(),b));
-                }//if
+                if (!b.equals(o))
+                    o.addForce(forceApplied(o,b));
             }//foreach
         }//while
     }

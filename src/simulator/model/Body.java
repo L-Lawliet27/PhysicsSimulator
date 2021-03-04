@@ -86,4 +86,9 @@ public class Body {
         return getState().toString();
     }
 
+
+    public boolean equals(Body b){
+        return this.id.equals(b.id);
+    }
+
 }
