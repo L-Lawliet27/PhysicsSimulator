@@ -66,10 +66,14 @@ public class EpsilonEqualStates implements StateComparator {
             return !equal(m1,m2);
         }//if
 
-        Vector2D v1 = (Vector2D) ja1.getJSONObject(i).get(s);
-        Vector2D v2 = (Vector2D) ja2.getJSONObject(i).get(s);
+        Vector2D v1 =  new Vector2D(cord(ja1,i,s,0), cord(ja1,i,s,1));
+        Vector2D v2 =  new Vector2D(cord(ja2,i,s,0), cord(ja2,i,s,1));
         return !equal(v1,v2);
 
+    }
+
+    private double cord(JSONArray j, int i, String s, int c){
+        return j.getJSONObject(i).getJSONArray(s).getDouble(c);
     }
 
 
