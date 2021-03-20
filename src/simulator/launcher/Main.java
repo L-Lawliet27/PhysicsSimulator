@@ -10,9 +10,12 @@ import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
 import simulator.control.StateComparator;
-import simulator.factories.Factory;
+import simulator.factories.*;
 import simulator.model.Body;
 import simulator.model.ForceLaws;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -36,10 +39,25 @@ public class Main {
 
 	private static void init() {
 		// TODO initialize the bodies factory
+		ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+		bodyBuilders.add(new BasicBodyBuilder<>());
+		bodyBuilders.add(new MassLosingBodyBuilder<>());
+		_bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
 
 		// TODO initialize the force laws factory
+		ArrayList<Builder<ForceLaws>> forceBuilders = new ArrayList<>();
+		forceBuilders.add(new NewtonUniversalGravitationBuilder<>());
+		forceBuilders.add(new MovingTowardsFixedPointBuilder<>());
+		forceBuilders.add(new NoForceBuilder<>());
+		_forceLawsFactory = new BuilderBasedFactory<>(forceBuilders);
 
 		// TODO initialize the state comparator
+		ArrayList<Builder<StateComparator>> stateBuilders = new ArrayList<>();
+		stateBuilders.add(new MassEqualStatesBuilder<>());
+		stateBuilders.add(new EpsilonEqualStatesBuilder<>());
+		_stateComparatorFactory = new BuilderBasedFactory<>(stateBuilders);
+
+
 	}
 
 	private static void parseArgs(String[] args) {

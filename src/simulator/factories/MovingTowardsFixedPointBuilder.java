@@ -8,7 +8,7 @@ import simulator.model.MovingTowardsFixedPoint;
 
 public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
 
-    public MovingTowardsFixedPointBuilder(String type) {
+    public MovingTowardsFixedPointBuilder() {
         super("mtcp");
     }
 
