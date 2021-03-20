@@ -53,7 +53,21 @@ public class MassLosingBodyBuilder<T> extends Builder<Body> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        //TODO
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("type", "type of body [mlb]");
+
+        JSONObject b = new JSONObject();
+        b.put("id", "identifier [String]");
+        b.put("m", "mass [Double]");
+        b.put("p", "position [Vector2D]");
+        b.put("v", "velocity [Vector2D]");
+        b.put("f", "force [Vector2D]");
+        b.put("freq", "loss frequency [Double]");
+        b.put("factor", "loss factor [Double]");
+
+        o.put("data", b);
+
+        return o;
     }
+
 }

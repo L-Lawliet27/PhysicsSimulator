@@ -1,5 +1,6 @@
 package simulator.model;
 
+import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
 public class MassLosingBody extends Body {
@@ -29,4 +30,13 @@ public class MassLosingBody extends Body {
 
     private void reduceMass(){ mass = mass * (1-lossFactor); }
 
+
+    @Override
+    public JSONObject getState() {
+       JSONObject b = super.getState();
+       b.put("freq", lossFrequency);
+       b.put("factor", lossFactor);
+
+       return b;
+    }
 }

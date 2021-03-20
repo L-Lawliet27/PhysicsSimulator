@@ -13,17 +13,19 @@ public class EpsilonEqualStatesBuilder<T> extends Builder<StateComparator> {
 
     @Override
     protected StateComparator instanceOf(JSONObject data) {
-        double eps;
+        double eps = 0.0;
 
         if(!data.has("eps")) throw new IllegalArgumentException("No Epsilon");
 
         try{
             eps = data.getDouble("eps");
-        }catch (NullPointerException | NumberFormatException e){
-            return null;
+        }catch (NullPointerException | NumberFormatException ignored){
+            
         }
 
         return new EpsilonEqualStates(eps);
+
+
     }
 
     @Override
