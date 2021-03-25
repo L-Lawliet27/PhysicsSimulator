@@ -9,10 +9,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
+import simulator.control.Controller;
 import simulator.control.StateComparator;
 import simulator.factories.*;
 import simulator.model.Body;
 import simulator.model.ForceLaws;
+import simulator.model.PhysicsSimulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,15 @@ public class Main {
 	private final static Double _dtimeDefaultValue = 2500.0;
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
+	private final static Integer _stepsDefaultValue = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _dtime = null;
 	private static String _inFile = null;
+	private static String _outFile = null;
+	private static Integer _steps = null;
+	private static String _eoFile = null;
 	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
 
@@ -75,6 +81,9 @@ public class Main {
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
 			// TODO add support of -o, -eo, and -s (define corresponding parse methods)
+			parseOutFileOption(line);
+			parseExpectedOutputFileOption(line);
+			parseStepsOption(line);
 
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
@@ -85,10 +94,10 @@ public class Main {
 			//
 			String[] remaining = line.getArgs();
 			if (remaining.length > 0) {
-				String error = "Illegal arguments:";
+				StringBuilder error = new StringBuilder("Illegal arguments:");
 				for (String o : remaining)
-					error += (" " + o);
-				throw new ParseException(error);
+					error.append(" ").append(o);
+				throw new ParseException(error.toString());
 			}
 
 		} catch (ParseException e) {
@@ -107,8 +116,15 @@ public class Main {
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
-		// TODO add support for -o, -eo, and -s (add corresponding information to
-		// cmdLineOptions)
+
+
+		// TODO add support for -o, -eo, and -s (add corresponding information to cmdLineOptions)
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
+		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg().desc("The expected output file. If not provided\n" +
+				"no comparison is applied").build());
+		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg().desc("An integer representing the number of\n" +
+				"simulation steps. Default value: 150.").build());
+
 
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
@@ -137,17 +153,17 @@ public class Main {
 		if (factory == null)
 			return "No values found (the factory is null)";
 
-		String s = "";
+		StringBuilder s = new StringBuilder();
 
 		for (JSONObject fe : factory.getInfo()) {
 			if (s.length() > 0) {
-				s = s + ", ";
+				s.append(", ");
 			}
-			s = s + "'" + fe.getString("type") + "' (" + fe.getString("desc") + ")";
+			s.append("'").append(fe.getString("type")).append("' (").append(fe.getString("desc")).append(")");
 		}
 
-		s = s + ". You can provide the 'data' json attaching :{...} to the tag, but without spaces.";
-		return s;
+		s.append(". You can provide the 'data' json attaching :{...} to the tag, but without spaces.");
+		return s.toString();
 	}
 
 	private static void parseHelpOption(CommandLine line, Options cmdLineOptions) {
@@ -229,8 +245,47 @@ public class Main {
 		}
 	}
 
+
+	//NEW METHODS--------------------------------------------------------------------------------------------
+	private static void parseOutFileOption(CommandLine line) throws ParseException {
+		_outFile = line.getOptionValue("o");
+		if (_outFile == null) {
+			throw new ParseException("In batch mode file to write the output is required");
+		}
+	}
+
+	private static void parseStepsOption(CommandLine line) throws ParseException{
+		String s = line.getOptionValue("s");
+		try {
+			_steps = Integer.parseInt(s);
+			assert (_steps > 0);
+		} catch (Exception e) {
+			throw new ParseException("Invalid steps value: " + s);
+		}
+	}
+
+	private static void parseExpectedOutputFileOption(CommandLine line) throws ParseException {
+		_eoFile = line.getOptionValue("eo");
+		if (_eoFile == null) {
+			throw new ParseException("In batch mode file to compare with the output is required");
+		}
+	}
+	//NEW METHODS---------------------------------------------------------------------------------------------
+
+
+
 	private static void startBatchMode() throws Exception {
 		// TODO complete this method
+		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
+
+		//TODO INPUT AND OUTPUT
+
+		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
+		Controller controller = new Controller(simulator,_bodyFactory);
+		//controller.loadBodies();
+		//controller.run();
+
+
 	}
 
 	private static void start(String[] args) throws Exception {

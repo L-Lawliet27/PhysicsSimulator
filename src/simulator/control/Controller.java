@@ -34,7 +34,7 @@ public class Controller {
     }
 
 
-    public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesNotEqualException {
+    public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesNotEqualException{
 
         PrintStream p = new PrintStream(out);
         p.println("{");
