@@ -16,6 +16,10 @@ import simulator.model.Body;
 import simulator.model.ForceLaws;
 import simulator.model.PhysicsSimulator;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -255,7 +259,7 @@ public class Main {
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
-		String s = line.getOptionValue("s");
+		String s = line.getOptionValue("s", _stepsDefaultValue.toString());
 		try {
 			_steps = Integer.parseInt(s);
 			assert (_steps > 0);
@@ -279,12 +283,15 @@ public class Main {
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 
 		//TODO INPUT AND OUTPUT
+		InputStream input = new FileInputStream(_inFile);
+		InputStream eoput = new FileInputStream(_eoFile);
+		OutputStream output = new FileOutputStream(_outFile);
+
 
 		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		Controller controller = new Controller(simulator,_bodyFactory);
-		//controller.loadBodies();
-		//controller.run();
-
+		controller.loadBodies(input);
+		controller.run(_steps, output , eoput, stateComparator);
 
 	}
 
