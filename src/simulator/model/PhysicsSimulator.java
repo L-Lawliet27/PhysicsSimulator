@@ -38,9 +38,8 @@ public class PhysicsSimulator {
         for (Body o : bodies) {
             o.resetForce();
             o.move(realTPS);
-            currTime += realTPS;
         }
-
+        currTime += realTPS;
         fL.apply(bodies);
 
     }
@@ -54,7 +53,7 @@ public class PhysicsSimulator {
 
     public JSONObject getState(){
         JSONObject s = new JSONObject();
-        s.put("time", realTPS);
+        s.put("time", currTime);
 
         JSONArray b = new JSONArray();
         for (Body o : bodies) {

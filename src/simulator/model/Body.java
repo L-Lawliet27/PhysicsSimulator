@@ -18,7 +18,8 @@ public class Body {
         velocity=v;
         position=pos;
         mass=m;
-        force= new Vector2D();
+        force = new Vector2D();
+        accel = new Vector2D();
     }
 
     public String getId() {
@@ -42,7 +43,7 @@ public class Body {
     }
 
     void addForce(Vector2D f){
-        force.plus(f);
+        force = force.plus(f);
     }
 
     void resetForce(){
@@ -63,12 +64,14 @@ public class Body {
     }
 
     private void changePos(double t){
-        position.plus(velocity.scale(t));
-        position.plus(accel.scale(Math.pow(t,2)/2));
+
+        Vector2D left = velocity.scale(t);
+        Vector2D right = accel.scale(Math.pow(t,2)/2);
+        position = position.plus(left.plus(right));
     }
 
     private void changeVel(double t){
-        velocity.plus(accel.scale(t));
+        velocity = velocity.plus(accel.scale(t));
     }
 
 
@@ -76,9 +79,9 @@ public class Body {
         JSONObject b = new JSONObject();
         b.put("id", id);
         b.put("m", mass);
-        b.put("p", position);
-        b.put("v", velocity);
-        b.put("f", force);
+        b.put("p", position.asJSONArray());
+        b.put("v", velocity.asJSONArray());
+        b.put("f", force.asJSONArray());
         return b;
     }
 

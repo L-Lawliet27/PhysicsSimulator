@@ -23,7 +23,7 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
             try{
                 double x = ar.getDouble(0);
                 double y = ar.getDouble(1);
-                c.plus(new Vector2D(x, y));
+                c = c.plus(new Vector2D(x, y));
             } catch (NumberFormatException e){
                 System.out.println("Not a Double");
             }
