@@ -58,6 +58,8 @@ public class BasicBodyBuilder<T> extends Builder<Body> {
 
         o.put("data", b);
 
+        o.put("desc", "Basic Body");
+
         return o;
     }
 }

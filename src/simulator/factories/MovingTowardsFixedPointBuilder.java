@@ -8,24 +8,29 @@ import simulator.model.MovingTowardsFixedPoint;
 
 public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
 
+    private Vector2D c = new Vector2D();
+    private double g = 9.81;
+
     public MovingTowardsFixedPointBuilder() {
         super("mtcp");
     }
 
     @Override
     protected ForceLaws instanceOf(JSONObject data) {
-        JSONArray ar;
-        Vector2D c;
-        double g;
 
-        try{
-            ar = data.getJSONArray("c");
-            c = new Vector2D(ar.getDouble(0), ar.getDouble(1));
-            g = data.getDouble("g");
-
-        }catch (NullPointerException | NumberFormatException e) {
-            return null;
+        if(data.has("c")) {
+            JSONArray ar = data.getJSONArray("c");
+            try{
+                double x = ar.getDouble(0);
+                double y = ar.getDouble(1);
+                c.plus(new Vector2D(x, y));
+            } catch (NumberFormatException e){
+                System.out.println("Not a Double");
+            }
         }
+
+        if(data.has("g"))
+            g = data.getDouble("g");
 
         return new MovingTowardsFixedPoint(c,g);
     }
@@ -33,6 +38,17 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("type", "mtcp");
+
+        JSONObject b = new JSONObject();
+        b.put("c", "[0,0]");
+        b.put("g", "9.89");
+
+        o.put("data", b);
+
+        o.put("desc", "Force that moves Body towards a Point");
+
+        return o;
     }
 }

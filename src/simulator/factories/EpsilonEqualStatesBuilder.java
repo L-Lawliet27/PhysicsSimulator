@@ -6,6 +6,8 @@ import simulator.control.StateComparator;
 
 public class EpsilonEqualStatesBuilder<T> extends Builder<StateComparator> {
 
+    private double eps = 0.0;
+
     public EpsilonEqualStatesBuilder() {
         super("epseq");
     }
@@ -13,23 +15,26 @@ public class EpsilonEqualStatesBuilder<T> extends Builder<StateComparator> {
 
     @Override
     protected StateComparator instanceOf(JSONObject data) {
-        double eps = 0.0;
 
-        if(!data.has("eps")) throw new IllegalArgumentException("No Epsilon");
-
-        try{
+        if(data.has("eps"))
             eps = data.getDouble("eps");
-        }catch (NullPointerException | NumberFormatException ignored){
-            
-        }
 
         return new EpsilonEqualStates(eps);
-
 
     }
 
     @Override
     public JSONObject getBuilderInfo() {
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("type", "epseq");
+
+        JSONObject b = new JSONObject();
+        b.put("eps", "0.0");
+
+        o.put("data", b);
+
+        o.put("desc", "Epsilon Equality Comparator");
+
+        return o;
     }
 }

@@ -18,7 +18,15 @@ public class NoForceBuilder<T> extends Builder<ForceLaws> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        //todo
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("type", "ng");
+
+        JSONObject b = new JSONObject();
+
+        o.put("data", b);
+
+        o.put("desc", "No Force Used");
+
+        return o;
     }
 }

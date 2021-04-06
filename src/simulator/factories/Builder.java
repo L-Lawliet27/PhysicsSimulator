@@ -17,7 +17,7 @@ public abstract class Builder<T> {
     }
 
     public T createInstance(JSONObject info){
-        T o;
+        T o = null;
 
         if(info.has("type") && info.get("type").equals(type)){
 
@@ -25,7 +25,8 @@ public abstract class Builder<T> {
                 o = instanceOf(info.getJSONObject("data"));
             else return null;
 
-        } else throw new IllegalArgumentException("'type' Error");
+        }
+        //else throw new IllegalArgumentException("'type' Error");
 
         return o;
     }

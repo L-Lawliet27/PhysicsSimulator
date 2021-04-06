@@ -6,8 +6,6 @@ import simulator.misc.Vector2D;
 
 public class EpsilonEqualStates implements StateComparator {
 
-    private final String v = "v";
-
     private double eps;
 
     public EpsilonEqualStates(double eps){
@@ -55,10 +53,17 @@ public class EpsilonEqualStates implements StateComparator {
     }
 
 
+    private boolean eve(int i, JSONArray a1, JSONArray a2){
+        return neq(i, a1, a2) && deq("m", i, a1, a2) && deq("p", i, a1, a2) &&
+                deq("f", i, a1, a2) && deq("v", i, a1, a2);
+    }
+
+
     private boolean neq(int i, JSONArray ja1, JSONArray ja2){
 
         return !ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id"));
     }
+
 
     private boolean deq(String s, int i, JSONArray ja1, JSONArray ja2){
         if(s.equals("m")){
@@ -87,9 +92,6 @@ public class EpsilonEqualStates implements StateComparator {
     }
 
 
-    private boolean eve(int i, JSONArray a1, JSONArray a2){
-       return neq(i, a1, a2) && deq("m", i, a1, a2) && deq("p", i, a1, a2) &&
-               deq("f", i, a1, a2) && deq("v", i, a1, a2);
-    }
+
 
 }

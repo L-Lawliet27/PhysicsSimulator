@@ -48,20 +48,20 @@ public class Main {
 	private static Factory<StateComparator> _stateComparatorFactory;
 
 	private static void init() {
-		// TODO initialize the bodies factory
+		// initialize the bodies factory
 		ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
 		bodyBuilders.add(new BasicBodyBuilder<>());
 		bodyBuilders.add(new MassLosingBodyBuilder<>());
 		_bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
 
-		// TODO initialize the force laws factory
+		// initialize the force laws factory
 		ArrayList<Builder<ForceLaws>> forceBuilders = new ArrayList<>();
 		forceBuilders.add(new NewtonUniversalGravitationBuilder<>());
 		forceBuilders.add(new MovingTowardsFixedPointBuilder<>());
 		forceBuilders.add(new NoForceBuilder<>());
 		_forceLawsFactory = new BuilderBasedFactory<>(forceBuilders);
 
-		// TODO initialize the state comparator
+		//  initialize the state comparator
 		ArrayList<Builder<StateComparator>> stateBuilders = new ArrayList<>();
 		stateBuilders.add(new MassEqualStatesBuilder<>());
 		stateBuilders.add(new EpsilonEqualStatesBuilder<>());
@@ -84,7 +84,7 @@ public class Main {
 
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
-			// TODO add support of -o, -eo, and -s (define corresponding parse methods)
+			//  add support of -o, -eo, and -s (define corresponding parse methods)
 			parseOutFileOption(line);
 			parseExpectedOutputFileOption(line);
 			parseStepsOption(line);
@@ -122,7 +122,7 @@ public class Main {
 
 
 
-		// TODO add support for -o, -eo, and -s (add corresponding information to cmdLineOptions)
+		// add support for -o, -eo, and -s (add corresponding information to cmdLineOptions)
 		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
 		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg().desc("The expected output file. If not provided\n" +
 				"no comparison is applied").build());
@@ -269,30 +269,31 @@ public class Main {
 	}
 
 	private static void parseExpectedOutputFileOption(CommandLine line) throws ParseException {
-		_eoFile = line.getOptionValue("eo");
-		if (_eoFile == null) {
-			throw new ParseException("In batch mode file to compare with the output is required");
-		}
+		 _eoFile = line.getOptionValue("eo");
 	}
 	//NEW METHODS---------------------------------------------------------------------------------------------
 
 
 
 	private static void startBatchMode() throws Exception {
-		// TODO complete this method
+		// Simulator
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 
-		//TODO INPUT AND OUTPUT
+		// INPUT AND OUTPUT
 		InputStream input = new FileInputStream(_inFile);
-		InputStream eoput = new FileInputStream(_eoFile);
 		OutputStream output = new FileOutputStream(_outFile);
-
 
 		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		Controller controller = new Controller(simulator,_bodyFactory);
 		controller.loadBodies(input);
-		controller.run(_steps, output , eoput, stateComparator);
 
+		if(_eoFile != null) {
+			InputStream eoput = new FileInputStream(_eoFile);
+			controller.run(_steps, output, eoput, stateComparator);
+		} else{
+			controller.run(_steps, output);
+		}//if
+		output.close();
 	}
 
 	private static void start(String[] args) throws Exception {

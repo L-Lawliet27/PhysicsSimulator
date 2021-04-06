@@ -34,36 +34,43 @@ public class Controller {
     }
 
 
-    public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesNotEqualException{
+    public void run(int steps, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesNotEqualException{
 
         PrintStream p = new PrintStream(out);
         p.println("{");
         p.println("\"states\": [");
 
-        if (expOut != null){
-            JSONObject jEx = new JSONObject(new JSONTokener(expOut));
-            JSONArray arrEx = jEx.getJSONArray("states");
+        JSONObject jEx = new JSONObject(new JSONTokener(expOut));
+        JSONArray arrEx = jEx.getJSONArray("states");
 
-            for (int i = 0; i < n; i++) {
-                p.println(phy.getState());
+        for (int i = 0; i < steps; i++) {
+            p.println(phy.getState());
 
-                if(!cmp.equal(phy.getState(), arrEx.getJSONObject(i))){
-                    throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
-                }//if
+            if(!cmp.equal(phy.getState(), arrEx.getJSONObject(i)))
+                throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
 
-                phy.advance();
-
-            }//for
-        } else {
-            for (int i = 0; i < n; i++) {
-                p.println(phy.getState());
-                phy.advance();
-            }//for
-        }//else
-
+            phy.advance();
+        }//for
 
         p.println("]");
         p.println("}");
+        p.close();
+    }
+
+    public void run(int steps, OutputStream out){
+
+        PrintStream p = new PrintStream(out);
+        p.println("{");
+        p.println("\"states\": [");
+
+        for (int i = 0; i < steps; i++) {
+            p.println(phy.getState());
+            phy.advance();
+        }//for
+
+        p.println("]");
+        p.println("}");
+        p.close();
     }
 
 }

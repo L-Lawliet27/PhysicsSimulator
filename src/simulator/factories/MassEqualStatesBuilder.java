@@ -20,6 +20,15 @@ public class MassEqualStatesBuilder<T> extends Builder<StateComparator> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("type", "masseq");
+
+        JSONObject b = new JSONObject();
+
+        o.put("data", b);
+
+        o.put("desc", "Mass Equality Comparator");
+
+        return o;
     }
 }

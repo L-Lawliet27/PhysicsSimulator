@@ -67,6 +67,8 @@ public class MassLosingBodyBuilder<T> extends Builder<Body> {
 
         o.put("data", b);
 
+        o.put("desc", "Body that Loses Mass Over Time");
+
         return o;
     }
 
