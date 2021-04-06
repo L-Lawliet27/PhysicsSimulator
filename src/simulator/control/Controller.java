@@ -44,7 +44,10 @@ public class Controller {
         JSONArray arrEx = jEx.getJSONArray("states");
 
         for (int i = 0; i < steps; i++) {
-            p.println(phy.getState());
+            if(i!=0)
+                p.println(","+ phy.getState());
+            else
+                p.println(phy.getState());
 
             if(!cmp.equal(phy.getState(), arrEx.getJSONObject(i)))
                 throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
@@ -64,7 +67,10 @@ public class Controller {
         p.println("\"states\": [");
 
         for (int i = 0; i < steps; i++) {
-            p.println(phy.getState());
+            if(i!=0)
+                p.println(","+ phy.getState());
+            else
+                p.println(phy.getState());
             phy.advance();
         }//for
 

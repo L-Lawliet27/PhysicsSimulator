@@ -39,8 +39,8 @@ public class PhysicsSimulator {
             o.resetForce();
             o.move(realTPS);
         }
-        currTime += realTPS;
         fL.apply(bodies);
+        currTime += realTPS;
 
     }
 
