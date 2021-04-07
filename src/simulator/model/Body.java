@@ -19,7 +19,6 @@ public class Body {
         position=pos;
         mass=m;
         force = new Vector2D();
-        accel = new Vector2D();
     }
 
     public String getId() {

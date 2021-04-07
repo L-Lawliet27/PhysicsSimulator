@@ -2,7 +2,6 @@ package simulator.model;
 
 import simulator.misc.Vector2D;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class NewtonUniversalGravitation implements ForceLaws{
@@ -16,15 +15,13 @@ public class NewtonUniversalGravitation implements ForceLaws{
     @Override
     public void apply(List<Body> bs) {
 
-        Iterator<Body> it = bs.iterator();
-
-        while(it.hasNext()){
-            Body o = it.next();
+        for (Body o : bs) {
             for (Body b : bs) {
                 if (!b.equals(o))
-                    o.addForce(forceApplied(o,b));
+                    o.addForce(forceApplied(o, b));
             }//foreach
-        }//while
+        }//foreach
+
     }
 
     private Vector2D forceApplied(Body b2, Body b1){

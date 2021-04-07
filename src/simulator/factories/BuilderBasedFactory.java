@@ -29,7 +29,8 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 
         for (Builder<T> bu : builders) {
             o = bu.createInstance(info);
-            if(o != null) return o;
+            if(o != null)
+                return o;
         }
 
         throw new IllegalArgumentException("Failed to Build");

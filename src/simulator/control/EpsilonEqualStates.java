@@ -44,7 +44,7 @@ public class EpsilonEqualStates implements StateComparator {
         if(a1.length() != a2.length()) return false;
 
         for (int i = 0; i < a1.length(); i++) {
-            if(eve(i,a1,a2)){
+            if(!eve(i,a1,a2)){
                 x = false;
                 break;
             }//if
@@ -54,14 +54,20 @@ public class EpsilonEqualStates implements StateComparator {
 
 
     private boolean eve(int i, JSONArray a1, JSONArray a2){
-        return neq(i, a1, a2) && deq("m", i, a1, a2) && deq("p", i, a1, a2) &&
-                deq("f", i, a1, a2) && deq("v", i, a1, a2);
+
+        boolean idSame= ieq(i, a1, a2);
+        boolean massEqual = deq("m", i, a1, a2);
+        boolean posEqual = deq("p", i, a1, a2);
+        boolean forzEqual = deq("f", i, a1, a2);
+        boolean velEqual = deq("v", i, a1, a2);
+
+        return idSame && massEqual && posEqual && forzEqual && velEqual;
     }
 
 
-    private boolean neq(int i, JSONArray ja1, JSONArray ja2){
+    private boolean ieq(int i, JSONArray ja1, JSONArray ja2){
 
-        return !ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id"));
+        return ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id"));
     }
 
 
@@ -70,7 +76,7 @@ public class EpsilonEqualStates implements StateComparator {
             try {
                 double m1 = ja1.getJSONObject(i).getDouble(s);
                 double m2 = ja2.getJSONObject(i).getDouble(s);
-                return !equal(m1, m2);
+                return equal(m1, m2);
             }catch (NumberFormatException e){
                 throw new IllegalArgumentException();
             }
@@ -80,7 +86,7 @@ public class EpsilonEqualStates implements StateComparator {
 
             Vector2D v1 = new Vector2D(cord(ja1, i, s, 0), cord(ja1, i, s, 1));
             Vector2D v2 = new Vector2D(cord(ja2, i, s, 0), cord(ja2, i, s, 1));
-            return !equal(v1, v2);
+            return equal(v1, v2);
 
         }catch (NullPointerException | NumberFormatException e){
             throw new IllegalArgumentException();

@@ -28,7 +28,7 @@ public class MassEqualStates implements StateComparator{
         if(a1.length() != a2.length()) return false;
 
         for (int i = 0; i < a1.length(); i++) {
-            if( neq("id", i, a1, a2) && neq("m", i, a1, a2)){
+            if( ieq(i, a1, a2) && meq(i, a1, a2)){
                 x = false;
                 break;
             }
@@ -37,8 +37,14 @@ public class MassEqualStates implements StateComparator{
         return x;
     }
 
-    private boolean neq(String s, int i, JSONArray ja1, JSONArray ja2){
-        return !ja1.getJSONObject(i).get(s).equals(ja2.getJSONObject(i).get(s));
+    private boolean ieq(int i, JSONArray ja1, JSONArray ja2){
+        return ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id"));
+    }
+
+    private boolean meq(int i, JSONArray ja1, JSONArray ja2){
+        double m1 = ja1.getJSONObject(i).getDouble("m");
+        double m2 = ja2.getJSONObject(i).getDouble("m");
+        return m1==m2;
     }
 
 

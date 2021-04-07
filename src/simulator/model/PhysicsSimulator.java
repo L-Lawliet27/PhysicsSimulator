@@ -37,9 +37,14 @@ public class PhysicsSimulator {
 
         for (Body o : bodies) {
             o.resetForce();
-            o.move(realTPS);
         }
+
         fL.apply(bodies);
+
+        for (Body b : bodies) {
+            b.move(realTPS);
+        }
+
         currTime += realTPS;
 
     }
