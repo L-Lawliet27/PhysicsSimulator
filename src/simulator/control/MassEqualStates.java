@@ -18,9 +18,8 @@ public class MassEqualStates implements StateComparator{
         return times && data;
     }
 
-
     private boolean tEqual(JSONObject s1, JSONObject s2){
-        return s1.get("time").equals(s2.get("time"));
+        return s1.getInt("time") == s2.getInt("time");
     }
 
     private boolean dataEqual(JSONArray a1, JSONArray a2){

@@ -26,7 +26,7 @@ public class EpsilonEqualStates implements StateComparator {
     }
 
     private boolean tEqual(JSONObject s1, JSONObject s2){
-        return s1.get("time").equals(s2.get("time"));
+        return s1.getInt("time") == s2.getInt("time");
     }
 
     private boolean equal(double a, double b){
