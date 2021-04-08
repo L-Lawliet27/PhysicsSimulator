@@ -84,11 +84,12 @@ public class Main {
 
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
-			//  add support of -o, -eo, and -s (define corresponding parse methods)
+
+			// support of -o, -eo, and -s-------
 			parseOutFileOption(line);
 			parseExpectedOutputFileOption(line);
 			parseStepsOption(line);
-
+			//-----------------------------------
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
@@ -121,13 +122,14 @@ public class Main {
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
 
-
-		// add support for -o, -eo, and -s (add corresponding information to cmdLineOptions)
-		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
+		// support for -o, -eo, and -s ------------------------------------------------------------------------------------------------------------
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written. If not provided" +
+				"it is written in commandline").build());
 		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg().desc("The expected output file. If not provided\n" +
 				"no comparison is applied").build());
 		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg().desc("An integer representing the number of\n" +
 				"simulation steps. Default value: 150.").build());
+		//------------------------------------------------------------------------------------------------------------------------------------------
 
 
 		// delta-time
@@ -253,9 +255,6 @@ public class Main {
 	//NEW METHODS--------------------------------------------------------------------------------------------
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
-//		if (_outFile == null) {
-//			throw new ParseException("In batch mode file to write the output is required");
-//		}
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
@@ -280,7 +279,6 @@ public class Main {
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 
 		// INPUT AND OUTPUT
-
 			InputStream input = new FileInputStream(_inFile);
 			OutputStream output = null;
 			InputStream eoput = null;
@@ -291,13 +289,16 @@ public class Main {
 			if(_eoFile != null)
 				eoput = new FileInputStream(_eoFile);
 
-
+		//Comparator
 		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
+
+		//Controller
 		Controller controller = new Controller(simulator,_bodyFactory);
 		controller.loadBodies(input);
 
 		controller.run(_steps, output, eoput, stateComparator);
 
+		//Closing Streams
 		input.close();
 
 		if(output != null)
