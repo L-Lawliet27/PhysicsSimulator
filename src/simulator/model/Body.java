@@ -51,26 +51,25 @@ public class Body {
 
     void move(double t){
         accel = secondNewton();
-        changePos(t);
-        changeVel(t);
+        position = changePos(t);
+        velocity = changeVel(t);
     }
 
     private Vector2D secondNewton(){
         if(mass!=0.0){
-            return force.scale(1/mass);
+            return force.scale(1.0/mass);
         }
         return new Vector2D();
     }
 
-    private void changePos(double t){
-
+    private Vector2D changePos(double t){
         Vector2D left = velocity.scale(t);
-        Vector2D right = accel.scale(Math.pow(t,2)/2);
-        position = position.plus(left.plus(right));
+        Vector2D right = accel.scale(Math.pow(t,2)/2.0);
+        return position.plus(left.plus(right));
     }
 
-    private void changeVel(double t){
-        velocity = velocity.plus(accel.scale(t));
+    private Vector2D changeVel(double t){
+        return velocity.plus(accel.scale(t));
     }
 
 

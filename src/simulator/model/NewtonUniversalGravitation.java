@@ -18,7 +18,7 @@ public class NewtonUniversalGravitation implements ForceLaws{
         for (Body o : bs) {
             for (Body b : bs) {
                 if (!b.equals(o))
-                    o.addForce(forceApplied(o, b));
+                    o.addForce(forceApplied(b, o));
             }//foreach
         }//foreach
 
@@ -26,24 +26,31 @@ public class NewtonUniversalGravitation implements ForceLaws{
 
     private Vector2D forceApplied(Body b2, Body b1){
         double f = 0.0;
-        double dir = directionOf(b2,b1);
+        double dis = operation(b2,b1);
 
-        if(dir > 0){
-            f = fResult(b2, b1, dir);
+        if(dis > 0){
+            f = fResult(b2, b1, dis);
         }
-
-        return vectorDirection(b2,b1).scale(f);
+        Vector2D vDir = vectorDirection(b2,b1).direction();
+        return vDir.scale(f);
     }
 
-    private double directionOf(Body b2, Body b1){
-        return Math.pow(b2.position.distanceTo(b1.getPosition()),2);
+    private double operation(Body b2, Body b1){
+        Vector2D posB2 = b2.getPosition();
+        Vector2D posB1 = b1.getPosition();
+        double distance = posB2.distanceTo(posB1);
+        return Math.pow(distance,2);
     }
 
-    private double fResult(Body b2, Body b1, double dir){
-        return g * ((b2.mass * b1.mass)/dir);
+    private double fResult(Body b2, Body b1, double dis){
+        double mB2 = b2.getMass();
+        double mB1 = b1.getMass();
+        return g * ( (mB2 * mB1) / dis );
     }
 
     private Vector2D vectorDirection(Body b2, Body b1){
-        return b2.position.direction().minus(b1.position.direction());
+        Vector2D pB2 = b2.getPosition();
+        Vector2D pB1 = b1.getPosition();
+        return pB2.minus(pB1);
     }
 }

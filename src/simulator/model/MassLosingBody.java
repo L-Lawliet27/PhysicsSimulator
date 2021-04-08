@@ -18,7 +18,6 @@ public class MassLosingBody extends Body {
 
     void move(double t){
         super.move(t);
-
         if (counter >= lossFrequency){
             reduceMass();
             counter = 0.0;

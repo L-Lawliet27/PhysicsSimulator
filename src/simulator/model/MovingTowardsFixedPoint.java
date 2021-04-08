@@ -22,11 +22,11 @@ public class MovingTowardsFixedPoint implements ForceLaws{
     }
 
     private Vector2D forceApplied(Body b){
-        return vectorDirection(c,b).scale(b.mass/g);
+        return vectorDirection(c,b).direction().scale(b.getMass()/g);
     }
 
     private Vector2D vectorDirection(Vector2D c, Body b){
-        return c.minus(b.position);
+        return c.minus(b.getPosition());
     }
 
 
