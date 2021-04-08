@@ -298,9 +298,13 @@ public class Main {
 
 		controller.run(_steps, output, eoput, stateComparator);
 
+		input.close();
 
 		if(output != null)
 			output.close();
+
+		if (eoput != null)
+			eoput.close();
 	}
 
 	private static void start(String[] args) throws Exception {
