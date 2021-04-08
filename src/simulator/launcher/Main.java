@@ -253,9 +253,9 @@ public class Main {
 	//NEW METHODS--------------------------------------------------------------------------------------------
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
-		if (_outFile == null) {
-			throw new ParseException("In batch mode file to write the output is required");
-		}
+//		if (_outFile == null) {
+//			throw new ParseException("In batch mode file to write the output is required");
+//		}
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
@@ -280,20 +280,27 @@ public class Main {
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 
 		// INPUT AND OUTPUT
-		InputStream input = new FileInputStream(_inFile);
-		OutputStream output = new FileOutputStream(_outFile);
+
+			InputStream input = new FileInputStream(_inFile);
+			OutputStream output = null;
+			InputStream eoput = null;
+
+			if(_outFile != null)
+				output = new FileOutputStream(_outFile);
+
+			if(_eoFile != null)
+				eoput = new FileInputStream(_eoFile);
+
 
 		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		Controller controller = new Controller(simulator,_bodyFactory);
 		controller.loadBodies(input);
 
-		if(_eoFile != null) {
-			InputStream eoput = new FileInputStream(_eoFile);
-			controller.run(_steps, output, eoput, stateComparator);
-		} else{
-			controller.run(_steps, output);
-		}//if
-		output.close();
+		controller.run(_steps, output, eoput, stateComparator);
+
+
+		if(output != null)
+			output.close();
 	}
 
 	private static void start(String[] args) throws Exception {
