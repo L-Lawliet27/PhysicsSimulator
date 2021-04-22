@@ -1,0 +1,47 @@
+model
+=====
+
+# Body.java:
+
+- changed equals(Body) to equals(Object)
+
+# ForceLaws.java:
+
+- removed import
+
+# MassLosingBody.java:
+
+- counter incremented before the if-statement
+
+
+factories
+=========
+
+# BasicBodyBuilder.java:
+
+- removed try-catch
+
+# Builder.java:
+
+- refactored some of the code of getBuilderInfo, now the builders pass parameters to a protected method
+
+# EpsilonEqualStatesBuilder.java:
+
+- removed try-catch
+
+# MassLosingBodyBuilder.java:
+
+- removed try-catch
+
+# MovingTowardsFixedPointBuilder.java:
+
+- changed type from mtcp to mtfp
+
+- removed try-catch
+
+
+launcher
+========
+
+# Main.java:
+- set System.out as the default value for output

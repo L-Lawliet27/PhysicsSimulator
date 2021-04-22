@@ -88,7 +88,7 @@ public class Body {
     }
 
 
-    public boolean equals(Body b){
+    public boolean equals(Object b){
         return this.id.equals(b.id);
     }
 

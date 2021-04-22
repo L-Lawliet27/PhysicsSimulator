@@ -6,6 +6,9 @@ import simulator.model.NoForce;
 
 public class NoForceBuilder<T> extends Builder<ForceLaws> {
 
+    private final String desc="No Force Used";
+    private final String typeDesc="ng";
+
     public NoForceBuilder() {
         super("ng");
     }
@@ -18,15 +21,9 @@ public class NoForceBuilder<T> extends Builder<ForceLaws> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        JSONObject o = new JSONObject();
-        o.put("type", "ng");
 
         JSONObject b = new JSONObject();
 
-        o.put("data", b);
-
-        o.put("desc", "No Force Used");
-
-        return o;
+        return getBuilderInfo(typeDesc,b,desc);
     }
 }

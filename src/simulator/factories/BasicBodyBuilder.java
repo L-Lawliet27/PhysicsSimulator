@@ -7,6 +7,9 @@ import simulator.model.Body;
 
 public class BasicBodyBuilder<T> extends Builder<Body> {
 
+    private final String desc="Basic Body";
+    private final String typeDesc="type of body [basic]";
+
     public BasicBodyBuilder() {
         super("basic");
     }
@@ -19,23 +22,20 @@ public class BasicBodyBuilder<T> extends Builder<Body> {
         JSONArray p;
         JSONArray v;
         double mass;
-        try{
-            id = data.getString("id");
 
-            p = data.getJSONArray("p");
-            v = data.getJSONArray("v");
+        id = data.getString("id");
 
-            if(arrayCheck(p,v))
-                throw new IllegalArgumentException("Incorrect Number of vector elements");
+        p = data.getJSONArray("p");
+        v = data.getJSONArray("v");
 
-            position = new Vector2D(p.getDouble(0),p.getDouble(1));
-            velocity = new Vector2D(v.getDouble(0),v.getDouble(1));
+        if(arrayCheck(p,v))
+            throw new IllegalArgumentException("Incorrect Number of vector elements");
 
-            mass = data.getDouble("m");
+        position = new Vector2D(p.getDouble(0),p.getDouble(1));
+        velocity = new Vector2D(v.getDouble(0),v.getDouble(1));
 
-        }catch (NullPointerException | NumberFormatException | ClassCastException e){
-            return null;
-        }
+        mass = data.getDouble("m");
+
 
         return new Body(id,velocity,position,mass);
     }
@@ -46,9 +46,6 @@ public class BasicBodyBuilder<T> extends Builder<Body> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        JSONObject o = new JSONObject();
-        o.put("type", "type of body [basic]");
-
         JSONObject b = new JSONObject();
         b.put("id", "identifier [String]");
         b.put("m", "mass [Double]");
@@ -56,10 +53,6 @@ public class BasicBodyBuilder<T> extends Builder<Body> {
         b.put("v", "velocity [Vector2D]");
         b.put("f", "force [Vector2D]");
 
-        o.put("data", b);
-
-        o.put("desc", "Basic Body");
-
-        return o;
+        return getBuilderInfo(typeDesc,b,desc);
     }
 }

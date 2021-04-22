@@ -7,6 +7,8 @@ import simulator.model.NewtonUniversalGravitation;
 public class NewtonUniversalGravitationBuilder<T> extends Builder<ForceLaws> {
 
     private double g = 6.67e10-11;
+    private final String desc="Newton’s law of universal gravitation";
+    private final String typeDesc="nlug";
 
     public NewtonUniversalGravitationBuilder() {
         super("nlug");
@@ -23,16 +25,9 @@ public class NewtonUniversalGravitationBuilder<T> extends Builder<ForceLaws> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        JSONObject o = new JSONObject();
-        o.put("type", "nlug");
-
         JSONObject b = new JSONObject();
         b.put("G", "6.67e10-11");
 
-        o.put("data", b);
-
-        o.put("desc", "Newton’s law of universal gravitation");
-
-        return o;
+        return getBuilderInfo(typeDesc,b,desc);
     }
 }

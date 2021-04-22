@@ -280,7 +280,7 @@ public class Main {
 
 		// INPUT AND OUTPUT
 			InputStream input = new FileInputStream(_inFile);
-			OutputStream output = null;
+			OutputStream output = System.out;
 			InputStream eoput = null;
 
 			if(_outFile != null)

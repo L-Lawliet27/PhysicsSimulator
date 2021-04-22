@@ -6,6 +6,9 @@ import simulator.control.StateComparator;
 
 public class MassEqualStatesBuilder<T> extends Builder<StateComparator> {
 
+    private final String desc="Mass Equality Comparator";
+    private final String typeDesc="masseq";
+
     public MassEqualStatesBuilder() {
         super("masseq");
     }
@@ -20,15 +23,7 @@ public class MassEqualStatesBuilder<T> extends Builder<StateComparator> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        JSONObject o = new JSONObject();
-        o.put("type", "masseq");
-
         JSONObject b = new JSONObject();
-
-        o.put("data", b);
-
-        o.put("desc", "Mass Equality Comparator");
-
-        return o;
+        return getBuilderInfo(typeDesc,b,desc);
     }
 }

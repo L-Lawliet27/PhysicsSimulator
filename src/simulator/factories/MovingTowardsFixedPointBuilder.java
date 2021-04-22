@@ -11,8 +11,11 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
     private Vector2D c = new Vector2D();
     private double g = 9.81;
 
+    private final String desc="Force that moves Body towards a Point";
+    private final String typeDesc="mtfp";
+
     public MovingTowardsFixedPointBuilder() {
-        super("mtcp");
+        super("mtfp");
     }
 
     @Override
@@ -20,13 +23,10 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
 
         if(data.has("c")) {
             JSONArray ar = data.getJSONArray("c");
-            try{
-                double x = ar.getDouble(0);
-                double y = ar.getDouble(1);
-                c = c.plus(new Vector2D(x, y));
-            } catch (NumberFormatException e){
-                System.out.println("Not a Double");
-            }
+
+            double x = ar.getDouble(0);
+            double y = ar.getDouble(1);
+            c = c.plus(new Vector2D(x, y));
         }
 
         if(data.has("g"))
@@ -38,17 +38,10 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
 
     @Override
     public JSONObject getBuilderInfo() {
-        JSONObject o = new JSONObject();
-        o.put("type", "mtcp");
-
         JSONObject b = new JSONObject();
         b.put("c", "[0,0]");
         b.put("g", "9.89");
 
-        o.put("data", b);
-
-        o.put("desc", "Force that moves Body towards a Point");
-
-        return o;
+        return getBuilderInfo(typeDesc,b,desc);
     }
 }

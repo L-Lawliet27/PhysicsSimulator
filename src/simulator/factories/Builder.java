@@ -7,6 +7,8 @@ public abstract class Builder<T> {
 
     protected String type;
 
+    protected JSONObject o;
+
     public Builder(String type){
         this.type = typeCheck(type);
     }
@@ -26,12 +28,20 @@ public abstract class Builder<T> {
             else return null;
 
         }
-        //else throw new IllegalArgumentException("'type' Error");
 
         return o;
     }
 
     protected abstract T instanceOf(JSONObject data);
+
+
+    protected JSONObject getBuilderInfo(String typeDesc, JSONObject data, String desc){
+        o = new JSONObject();
+        o.put("type", typeDesc);
+        o.put("data", data);
+        o.put("desc", desc);
+        return o;
+    }
 
     public abstract JSONObject getBuilderInfo();
 
