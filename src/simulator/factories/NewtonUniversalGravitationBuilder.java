@@ -26,7 +26,7 @@ public class NewtonUniversalGravitationBuilder<T> extends Builder<ForceLaws> {
     @Override
     public JSONObject getBuilderInfo() {
         JSONObject b = new JSONObject();
-        b.put("G", "6.67e10-11");
+        b.put("G", "the gravitational constant (a number)");
 
         return getBuilderInfo(typeDesc,b,desc);
     }

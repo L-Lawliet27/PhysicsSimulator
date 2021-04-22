@@ -30,5 +30,9 @@ public class MovingTowardsFixedPoint implements ForceLaws{
     }
 
 
+    @Override
+    public String toString(){
+        return "Moving towards "+c+" with constant acceleration "+g;
+    }
 
 }

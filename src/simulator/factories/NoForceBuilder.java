@@ -6,7 +6,7 @@ import simulator.model.NoForce;
 
 public class NoForceBuilder<T> extends Builder<ForceLaws> {
 
-    private final String desc="No Force Used";
+    private final String desc="No Force";
     private final String typeDesc="ng";
 
     public NoForceBuilder() {

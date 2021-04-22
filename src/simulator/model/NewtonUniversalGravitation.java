@@ -53,4 +53,10 @@ public class NewtonUniversalGravitation implements ForceLaws{
         Vector2D pB1 = b1.getPosition();
         return pB2.minus(pB1);
     }
+
+    @Override
+    public String toString(){
+        return "Newton’s Universal Gravitation with G="+g;
+    }
+
 }
