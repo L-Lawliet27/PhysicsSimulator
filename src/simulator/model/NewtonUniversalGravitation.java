@@ -17,7 +17,7 @@ public class NewtonUniversalGravitation implements ForceLaws{
 
         for (Body o : bs) {
             for (Body b : bs) {
-                if (!b.equals(o))
+                if (!b.equals(o.getId()))
                     o.addForce(forceApplied(b, o));
             }//foreach
         }//foreach

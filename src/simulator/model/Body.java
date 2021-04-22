@@ -89,7 +89,7 @@ public class Body {
 
 
     public boolean equals(Object b){
-        return this.id.equals(b.id);
+        return this.id.equals(b.toString());
     }
 
 }

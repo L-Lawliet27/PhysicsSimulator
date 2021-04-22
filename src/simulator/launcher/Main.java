@@ -293,16 +293,14 @@ public class Main {
 		StateComparator stateComparator = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 
 		//Controller
-		Controller controller = new Controller(simulator,_bodyFactory);
+		Controller controller = new Controller(simulator,_bodyFactory, _forceLawsFactory);
 		controller.loadBodies(input);
 
 		controller.run(_steps, output, eoput, stateComparator);
 
 		//Closing Streams
 		input.close();
-
-		if(output != null)
-			output.close();
+		output.close();
 
 		if (eoput != null)
 			eoput.close();

@@ -5,21 +5,26 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import simulator.factories.Factory;
 import simulator.model.Body;
+import simulator.model.ForceLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.model.SimulatorObserver;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 public class Controller {
 
     private PhysicsSimulator phy;
     private Factory<Body> fb;
+    private Factory<ForceLaws> ff;
 
 
-    public Controller(PhysicsSimulator physicsSimulator, Factory<Body> bodyFactory){
+    public Controller(PhysicsSimulator physicsSimulator, Factory<Body> bodyFactory, Factory<ForceLaws> forceFactory){
         phy=physicsSimulator;
         fb=bodyFactory;
+        ff=forceFactory;
     }
 
     public void loadBodies(InputStream in){
@@ -35,37 +40,34 @@ public class Controller {
 
 
     public void run(int steps, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesNotEqualException {
-        if(out != null) {
-            PrintStream p = new PrintStream(out);
-            p.println("{");
-            p.println("\"states\": [");
+        PrintStream p = new PrintStream(out);
+        p.println("{");
+        p.println("\"states\": [");
 
-            if(expOut != null) {
-                JSONObject jEx = new JSONObject(new JSONTokener(expOut));
-                JSONArray arrEx = jEx.getJSONArray("states");
+        if(expOut != null) {
+            JSONObject jEx = new JSONObject(new JSONTokener(expOut));
+            JSONArray arrEx = jEx.getJSONArray("states");
 
-                for (int i = 0; i < steps; i++) {
-                    if (i != 0)
-                        p.println("," + phy.getState());
-                    else
-                        p.println(phy.getState());
+            for (int i = 0; i < steps; i++) {
+                if (i != 0)
+                    p.println("," + phy.getState());
+                else
+                    p.println(phy.getState());
 
-                    if (!cmp.equal(phy.getState(), arrEx.getJSONObject(i)))
-                        throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
+                if (!cmp.equal(phy.getState(), arrEx.getJSONObject(i)))
+                    throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
 
-                    phy.advance();
-                }//for
-            } else runOut(steps,p);
+                phy.advance();
+            }//for
+        } else runOut(steps,p);
 
-            p.println("]");
-            p.println("}");
-            p.close();
-        } else runExp(steps,expOut,cmp);
+        p.println("]");
+        p.println("}");
+        p.close();
     }
 
 
     private void runOut(int steps, PrintStream p){
-
         for (int i = 0; i < steps; i++) {
             if(i!=0)
                 p.println(","+ phy.getState());
@@ -76,43 +78,33 @@ public class Controller {
     }
 
 
-    private void runExp(int steps, InputStream expOut, StateComparator cmp) throws StatesNotEqualException {
-        if(expOut != null) {
-
-            JSONObject jEx = new JSONObject(new JSONTokener(expOut));
-            JSONArray arrEx = jEx.getJSONArray("states");
-
-            System.out.println("{");
-            System.out.println("\"states\": [");
-
-            for (int i = 0; i < steps; i++) {
-
-                System.out.println(phy.getState());
-
-                if (!cmp.equal(phy.getState(), arrEx.getJSONObject(i)))
-                    throw new StatesNotEqualException(phy.getState(), arrEx.getJSONObject(i), i);
-
-                phy.advance();
-            }//for
-
-            System.out.println("]");
-            System.out.println("}");
-
-        } else runCom(steps);
-    }
-
-
-    private void runCom(int steps){
-        System.out.println("{");
-        System.out.println("\"states\": [");
-
-        for (int i = 0; i < steps; i++) {
-            System.out.println(phy.getState());
+    public void run(int n){
+        for (int i = 0; i < n; i++) {
             phy.advance();
         }//for
-
-        System.out.println("]");
-        System.out.println("}");
     }
+
+
+    public void reset(){
+        phy.reset();
+    }
+
+    public void setDeltaTime(double dt){
+        phy.setDeltaTime(dt);
+    }
+
+    public void addObserver(SimulatorObserver o){
+        phy.addObserver(o);
+    }
+
+    public List<JSONObject> getForceLawsInfo(){
+        return ff.getInfo();
+    }
+
+    public void setForceLaws(JSONObject info){
+        ForceLaws nf = ff.createInstance(info);
+        phy.setForceLaws(nf);
+    }
+
 
 }
