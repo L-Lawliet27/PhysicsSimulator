@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
@@ -18,14 +19,22 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private Controller ctrl;
     private boolean stopped;
 
+    private List<JButton> buttonList;
+
     private JToolBar toolBar;
     private JFileChooser fChoose;
     private JButton fileButton;
     private JButton forceButton;
+    private JButton startButton;
+    private JButton stopButton;
+    private JButton exitButton;
+    private JSpinner stepSpinner;
+    private JTextField deltaTimeField;
 
     public ControlPanel(Controller controller){
         ctrl = controller;
         stopped = true;
+        buttonList = new ArrayList<>();
         initGUI();
         ctrl.addObserver(this);
     }
@@ -46,7 +55,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         fileButton = new JButton();
         fileButton.setToolTipText("Select a File to Load into the Simulator");
         fileButton.setIcon(createImageIcon("resources/icons/open.png"));
+        fileButton.setEnabled(true);
         fileButton.addActionListener(e -> loadFile());
+        buttonList.add(fileButton);
         toolBar.add(fileButton);
         //File Button
 
@@ -55,14 +66,87 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         forceButton = new JButton();
         forceButton.setToolTipText("Select a Force Law to apply into the Simulator");
         forceButton.setIcon(createImageIcon("resources/icons/physics.png"));
+        forceButton.setEnabled(true);
         forceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ForceDialog(ctrl);
             }
         });
+        buttonList.add(forceButton);
+        toolBar.add(forceButton);
+        //Force Laws Button
 
 
+        //Start Button
+        startButton = new JButton();
+        startButton.setToolTipText("Run the Simulation");
+        startButton.setIcon(createImageIcon("resources/icons/run.png"));
+        startButton.setEnabled(true);
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                disableButtons();
+                stopButton.setEnabled(true);
+                int val = (int) stepSpinner.getValue();
+                Double time = new Double(deltaTimeField.getText());
+                stopped = false;
+                //delta
+                ctrl.setDeltaTime(time);
+                run_sim(val);
+            }
+        });
+        buttonList.add(startButton);
+        toolBar.add(startButton);
+        //Start Button
+
+        //Stop Button
+        stopButton = new JButton();
+        stopButton.setToolTipText("Stop the Simulation");
+        stopButton.setIcon(createImageIcon("resources/icons/stop.png"));
+        stopButton.setEnabled(true);
+        stopButton.addActionListener(e -> stopped=true);
+        buttonList.add(stopButton);
+        toolBar.add(stopButton);
+        //Stop Button
+
+
+        //Steps JSpinner
+        JLabel stepsLabel = new JLabel("Steps:");
+        toolBar.add(stepsLabel);
+        stepSpinner = new JSpinner(new SpinnerNumberModel(1000.0, 0.0, null, 50.0));
+        toolBar.add(stepSpinner);
+        //Steps JSpinner
+
+        //Delta-Time Field
+        JLabel deltaLabel = new JLabel("Delta-Time");
+        toolBar.add(deltaLabel);
+        deltaTimeField = new JTextField(7);
+        toolBar.add(deltaTimeField);
+        //Delta-Time Field
+
+        //Exit Button
+        exitButton = new JButton();
+        exitButton.setToolTipText("Exit Simulator");
+        exitButton.setIcon(createImageIcon("resources/icons/exit.png"));
+        exitButton.setEnabled(true);
+        exitButton.addActionListener(e -> exit());
+        buttonList.add(exitButton);
+        toolBar.add(exitButton);
+        //Exit Button
+
+    }
+
+    private void disableButtons(){
+        for (JButton b : buttonList) {
+                b.setEnabled(false);
+        }
+    }
+
+    private void enableButtons(){
+        for (JButton b : buttonList) {
+            b.setEnabled(true);
+        }
     }
 
     private void loadFile(){
@@ -74,7 +158,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 ctrl.loadBodies(new FileInputStream(getFile));
 
             }catch (FileNotFoundException e){
-                System.out.println("Couldn't Open file - " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Couldn't Open file - " + e.getMessage());
             }
         }
     }
@@ -88,28 +172,38 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         if(n>0 && !stopped){
             try{
                 ctrl.run(n);
+
             }catch (Exception e){
-                // TODO show the error in a dialog box
-                // TODO enable all buttons
+                JOptionPane.showMessageDialog(this, "Error, Cannot Run Simulation - " + e.getMessage());
+                enableButtons();
                 stopped = true;
             }
 
             SwingUtilities.invokeLater(() -> run_sim(n-1));
         }else {
             stopped=true;
-            // TODO enable all buttons
+            enableButtons();
         }
     }
+
+    private void exit(){
+        int n = JOptionPane.showOptionDialog(this, "Do you Want to Exit?",
+                "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, null, null);
+        if(n==0)
+            System.exit(0);
+    }
+
 
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-
+        deltaTimeField.setText(String.valueOf(dt));
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-
+        deltaTimeField.setText(String.valueOf(dt));
     }
 
     @Override
@@ -124,7 +218,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
     @Override
     public void onDeltaTimeChanged(double dt) {
-
+        deltaTimeField.setText(String.valueOf(dt));
     }
 
     @Override
