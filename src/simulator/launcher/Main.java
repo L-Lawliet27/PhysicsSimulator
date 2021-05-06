@@ -15,11 +15,10 @@ import simulator.factories.*;
 import simulator.model.Body;
 import simulator.model.ForceLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.view.MainWindow;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class Main {
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
 	private final static Integer _stepsDefaultValue = 150;
+	private final static String _modeDefaultValue = "batch";
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -41,6 +41,7 @@ public class Main {
 	private static String _eoFile = null;
 	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
+	private static String _mode = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
@@ -90,6 +91,11 @@ public class Main {
 			parseExpectedOutputFileOption(line);
 			parseStepsOption(line);
 			//-----------------------------------
+
+			// Mode -----------------------------
+			parseModeOption(line);
+			//-----------------------------------
+
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
@@ -120,6 +126,11 @@ public class Main {
 
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
+
+
+		// mode
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("Execution Mode. Possible values: ’batch’\n" +
+				"(Batch mode), ’gui’ (Graphical User Interface mode). Default value: ’batch’.").build());
 
 
 		// support for -o, -eo, and -s ------------------------------------------------------------------------------------------------------------
@@ -180,11 +191,8 @@ public class Main {
 		}
 	}
 
-	private static void parseInFileOption(CommandLine line) throws ParseException {
+	private static void parseInFileOption(CommandLine line) {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null) {
-			throw new ParseException("In batch mode an input file of bodies is required");
-		}
 	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
@@ -270,11 +278,20 @@ public class Main {
 	private static void parseExpectedOutputFileOption(CommandLine line) throws ParseException {
 		 _eoFile = line.getOptionValue("eo");
 	}
+
+
+	private static void parseModeOption(CommandLine line) throws ParseException {
+		_mode = line.getOptionValue("m", _modeDefaultValue).toLowerCase();
+	}
 	//NEW METHODS---------------------------------------------------------------------------------------------
 
 
 
 	private static void startBatchMode() throws Exception {
+		if (_inFile == null) {
+			throw new ParseException("In batch mode an input file of bodies is required");
+		}
+
 		// Simulator
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 
@@ -306,10 +323,44 @@ public class Main {
 			eoput.close();
 	}
 
+
+	private static void startGUIMode() throws Exception {
+		// Simulator
+		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
+
+		//Controller
+		Controller controller = new Controller(simulator,_bodyFactory, _forceLawsFactory);
+
+
+		//Input (optional)
+		InputStream input = null;
+		if(_inFile != null) {
+			input = new FileInputStream(_inFile);
+			controller.loadBodies(input);
+		}
+
+		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
+
+
+		//Closing (optional) Stream
+		if (input != null)
+			input.close();
+
+	}
+
+
+
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
-		startBatchMode();
+
+		if (_mode.equals("gui")){
+			startGUIMode();
+		}else {
+			startBatchMode();
+		}
+
 	}
+
 
 	public static void main(String[] args) {
 		try {

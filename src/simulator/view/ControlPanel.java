@@ -135,6 +135,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         toolBar.add(exitButton);
         //Exit Button
 
+        this.setVisible(true);
     }
 
     private void disableButtons(){

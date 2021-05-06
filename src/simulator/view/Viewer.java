@@ -6,6 +6,7 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,7 +15,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Viewer extends JComponent implements SimulatorObserver {
+public class Viewer extends JPanel implements SimulatorObserver {
 
     private Controller ctrl;
     private int centerX;
@@ -24,6 +25,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
     private boolean showHelp;
     private boolean showVectors;
 
+    private final String helpM = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit";
+
     public Viewer(Controller ctrl){
         initGUI();
         ctrl.addObserver(this);
@@ -31,6 +34,9 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     private void initGUI() {
         // TODO add border with title
+        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 2),
+                "Viewer", TitledBorder.LEFT, TitledBorder.TOP));
+
         bodies = new ArrayList<>();
         scale = 1.0;
         showHelp = true;
@@ -118,8 +124,51 @@ public class Viewer extends JComponent implements SimulatorObserver {
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
         // TODO draw a cross at center
+        gr.drawLine(centerX-1, centerY, centerX+1, centerY);
+        gr.drawLine(centerX, centerY-1, centerX, centerY+1);
+
         // TODO draw bodies (with vectors if _showVectors is true)
+        if (showVectors){
+            for (Body b : bodies) {
+                int x = (int) b.getPosition().getX();
+                int y = (int) b.getPosition().getY();
+
+                int vx = (int) b.getVelocity().getX();
+                int vy = (int) b.getVelocity().getY();
+
+                int fx = (int) b.getForce().getX();
+                int fy = (int) b.getForce().getY();
+
+
+                gr.setColor(Color.blue);
+                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
+
+                drawLineWithArrow(gr, x, y, vx, vy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.green, Color.green);
+                drawLineWithArrow(gr, x, y, fx, fy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.red, Color.red);
+
+                gr.drawString(b.getId(), x, y+1);
+
+            }
+
+        }else{
+            for (Body b : bodies) {
+                int x = (int) b.getPosition().getX();
+                int y = (int) b.getPosition().getY();
+
+                gr.setColor(Color.blue);
+                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
+                gr.drawString(b.getId(), x, y+1);
+
+            }
+        }
+
         // TODO draw help if _showHelp is true
+
+        if(showHelp){
+            gr.setColor(Color.red);
+            gr.drawString(helpM, 0, 0);
+            gr.drawString("Scaling ratio: " + scale, 0, 1);
+        }
     }
 
 
@@ -162,22 +211,33 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
+        this.bodies.clear();
+        this.bodies.addAll(bodies);
+        autoScale();
+        repaint();
 
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-
+        this.bodies.clear();
+        this.bodies.addAll(bodies);
+        autoScale();
+        repaint();
     }
 
     @Override
     public void onBodyAdded(List<Body> bodies, Body b) {
-
+        this.bodies.add(b);
+        autoScale();
+        repaint();
     }
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-
+        this.bodies.clear();
+        this.bodies.addAll(bodies);
+        repaint();
     }
 
     @Override

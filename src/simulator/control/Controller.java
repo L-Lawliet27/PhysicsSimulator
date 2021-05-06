@@ -68,18 +68,20 @@ public class Controller {
 
 
     private void runOut(int steps, PrintStream p){
-        for (int i = 0; i < steps; i++) {
-            if(i!=0)
-                p.println(","+ phy.getState());
-            else
-                p.println(phy.getState());
-            phy.advance();
-        }//for
+        if(p != null) {
+            for (int i = 0; i < steps; i++) {
+                if (i != 0)
+                    p.println("," + phy.getState());
+                else
+                    p.println(phy.getState());
+                phy.advance();
+            }//for
+        }
     }
 
 
-    public void run(int n){
-        for (int i = 0; i < n; i++) {
+    public void run(int steps){
+        for (int i = 0; i < steps; i++) {
             phy.advance();
         }//for
     }
