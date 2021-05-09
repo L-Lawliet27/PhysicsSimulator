@@ -43,8 +43,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         // TODO build the tool bar by adding buttons, etc.
 
         toolBar = new JToolBar();
-        toolBar.setFloatable(false);
-        this.add(toolBar, BorderLayout.PAGE_START);
+        this.add(toolBar, BorderLayout.WEST);
 
 
         //File Button
@@ -61,6 +60,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         toolBar.add(fileButton);
         //File Button
 
+        toolBar.addSeparator();
 
         //Force Laws Button
         forceButton = new JButton();
@@ -77,6 +77,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         toolBar.add(forceButton);
         //Force Laws Button
 
+        toolBar.addSeparator();
 
         //Start Button
         startButton = new JButton();
@@ -88,7 +89,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             public void actionPerformed(ActionEvent e) {
                 disableButtons();
                 stopButton.setEnabled(true);
-                int val = (int) stepSpinner.getValue();
+                Integer val = (Integer) stepSpinner.getValue();
                 Double time = new Double(deltaTimeField.getText());
                 stopped = false;
                 //delta
@@ -114,7 +115,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         //Steps JSpinner
         JLabel stepsLabel = new JLabel("Steps:");
         toolBar.add(stepsLabel);
-        stepSpinner = new JSpinner(new SpinnerNumberModel(1000.0, 0.0, null, 50.0));
+        stepSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, null, 50));
+        stepSpinner.setEditor(new JSpinner.NumberEditor(stepSpinner, "###,###,###"));
         toolBar.add(stepSpinner);
         //Steps JSpinner
 

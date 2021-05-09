@@ -339,7 +339,12 @@ public class Main {
 			controller.loadBodies(input);
 		}
 
-		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				new MainWindow(controller);
+			}
+		});
 
 
 		//Closing (optional) Stream
@@ -355,9 +360,9 @@ public class Main {
 
 		if (_mode.equals("gui")){
 			startGUIMode();
-		}else {
+		}else if(_mode.equals("batch")) {
 			startBatchMode();
-		}
+		} else throw new ParseException("No Mode Selected");
 
 	}
 

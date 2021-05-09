@@ -109,6 +109,8 @@ public class Viewer extends JPanel implements SimulatorObserver {
 
             }
         });
+
+//        this.setSize(700, 300);
     }
 
 

@@ -127,7 +127,7 @@ public class ForceDialog extends JDialog {
 
         this.add(forceMain);
         this.pack();
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setVisible(true);
 
 
