@@ -1,9 +1,12 @@
 package simulator.view;
 
+import javafx.scene.control.ComboBox;
 import org.json.JSONObject;
 import simulator.control.Controller;
+import simulator.model.ForceLaws;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +16,9 @@ public class ForceDialog extends JDialog {
     private Controller ctrl;
     private JSONObject info;
     private int check;
-    private final String[] columns = {"Key", "Value", "Description"};
+
+
+    private JComboBox<String> comboBox;
 
     public ForceDialog(Controller controller){
 //        super(parent, true);
@@ -35,52 +40,56 @@ public class ForceDialog extends JDialog {
 
         ForceTable tableModel = new ForceTable();
         JTable paramTable = new JTable(tableModel);
-        tableModel.setColumnIdentifiers(columns);
+        paramTable.setPreferredSize(new Dimension(300,200));
 
 
-        JComboBox comboBox = new JComboBox();
+
+        comboBox = new JComboBox<>();
 
         for (JSONObject f: ctrl.getForceLawsInfo()) {
-            comboBox.addItem(f.get("desc"));
+            comboBox.addItem(f.get("desc").toString());
         }
 
 
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox auxBox = (JComboBox) e.getSource();
+
+                @SuppressWarnings("unchecked")
+                JComboBox<String> auxBox = (JComboBox<String>) e.getSource();
                 Object selectedForce = auxBox.getSelectedItem();
 
                 for (JSONObject f : ctrl.getForceLawsInfo()) {
                     assert selectedForce != null;
-                    if(selectedForce.equals(f.get("desc"))){
-                        String[][] data = new String[3][3];
 
-                        if(f.has("G")) {
-                           data[0][0] = "G";
-                           data[0][1] = "";
-                           data[0][2] = f.get("G").toString();
-                           info = f;
+                    if(selectedForce.equals(f.get("desc").toString())){
+                        JSONObject fd = f.getJSONObject("data");
+                        tableModel.clearRows();
+                        if(fd.has("G")) {
+                            tableModel.setValueAt("G",0,0);
+                            tableModel.setValueAt("",0,1);
+                            tableModel.setValueAt(fd.get("G"),0,2);
+                           info = fd;
                            check = 1;
 
-                        }else if (f.has("c") && f.has("g")) {
-                            data[0][0] = "c";
-                            data[0][1] = "";
-                            data[0][2] = f.get("c").toString();
+                        }else if (fd.has("c") && fd.has("g")) {
+                            tableModel.setValueAt("c",0,0);
+                            tableModel.setValueAt("",0,1);
+                            tableModel.setValueAt(fd.get("c"),0,2);
 
-                            data[1][0] = "g";
-                            data[1][1] = "";
-                            data[1][2] = f.get("g").toString();
-                            info = f;
+                            tableModel.setValueAt("g",1,0);
+                            tableModel.setValueAt("",1,1);
+                            tableModel.setValueAt(fd.get("g"),1,2);
+
+                            info = fd;
                             check = 2;
                         }
-
-                        tableModel.addRow(data);
                     }
                 }
 
             }
         });
+
 
 
         JPanel optionPanel = new JPanel();
@@ -118,12 +127,16 @@ public class ForceDialog extends JDialog {
             }
         });
 
-        optionPanel.add(okButton);
-        optionPanel.add(cancelButton);
+        optionPanel.add(comboBox, BorderLayout.CENTER);
+        optionPanel.add(okButton, BorderLayout.PAGE_END);
+        optionPanel.add(cancelButton, BorderLayout.PAGE_END);
 
-        paramPanel.add(new ScrollPane().add(paramTable));
-        forceMain.add(paramPanel, BorderLayout.CENTER);
+
+        paramPanel.add(new JScrollPane(paramTable));
+
+        forceMain.add(new JScrollPane(paramPanel), BorderLayout.CENTER);
         forceMain.add(optionPanel, BorderLayout.PAGE_END);
+        forceMain.setVisible(true);
 
         this.add(forceMain);
         this.pack();
