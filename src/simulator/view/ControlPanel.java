@@ -43,6 +43,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         // TODO build the tool bar by adding buttons, etc.
 
         toolBar = new JToolBar();
+        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 12,5 ));
         this.add(toolBar, BorderLayout.WEST);
 
 
@@ -90,7 +91,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 disableButtons();
                 stopButton.setEnabled(true);
                 Integer val = (Integer) stepSpinner.getValue();
-                Double time = new Double(deltaTimeField.getText());
+                double time = Double.parseDouble(String.valueOf(deltaTimeField.getText()));
                 stopped = false;
                 //delta
                 ctrl.setDeltaTime(time);
@@ -117,13 +118,14 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         toolBar.add(stepsLabel);
         stepSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, null, 50));
         stepSpinner.setEditor(new JSpinner.NumberEditor(stepSpinner, "###,###,###"));
+        stepSpinner.setPreferredSize(new Dimension(100,30));
         toolBar.add(stepSpinner);
         //Steps JSpinner
 
         //Delta-Time Field
         JLabel deltaLabel = new JLabel("Delta-Time");
         toolBar.add(deltaLabel);
-        deltaTimeField = new JTextField(7);
+        deltaTimeField = new JTextField(6);
         toolBar.add(deltaTimeField);
         //Delta-Time Field
 

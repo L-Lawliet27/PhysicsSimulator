@@ -51,7 +51,7 @@ public class MainWindow extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setSize(700,600);
-
+        viewer.autoScale();
 
     }
 }

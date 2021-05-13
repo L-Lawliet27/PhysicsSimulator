@@ -16,6 +16,7 @@ public class ForceDialog extends JDialog {
     private Controller ctrl;
     private JSONObject info;
     private int check;
+    private boolean visible;
 
 
     private JComboBox<String> comboBox;
@@ -24,6 +25,7 @@ public class ForceDialog extends JDialog {
 //        super(parent, true);
         ctrl = controller;
         check = 0;
+        visible = false;
         initGUI();
     }
 
@@ -43,13 +45,12 @@ public class ForceDialog extends JDialog {
         paramTable.setPreferredSize(new Dimension(300,200));
 
 
-
         comboBox = new JComboBox<>();
 
         for (JSONObject f: ctrl.getForceLawsInfo()) {
             comboBox.addItem(f.get("desc").toString());
         }
-
+        comboBox.setSelectedIndex(2);
 
         comboBox.addActionListener(new ActionListener() {
             @Override
@@ -69,7 +70,7 @@ public class ForceDialog extends JDialog {
                             tableModel.setValueAt("G",0,0);
                             tableModel.setValueAt("",0,1);
                             tableModel.setValueAt(fd.get("G"),0,2);
-                           info = fd;
+                           info = f;
                            check = 1;
 
                         }else if (fd.has("c") && fd.has("g")) {
@@ -81,15 +82,21 @@ public class ForceDialog extends JDialog {
                             tableModel.setValueAt("",1,1);
                             tableModel.setValueAt(fd.get("g"),1,2);
 
-                            info = fd;
+                            info = f;
                             check = 2;
+                        }else{
+                            tableModel.setValueAt("",0,0);
+                            tableModel.setValueAt("",0,1);
+                            tableModel.setValueAt("",0,2);
+
+                            info = f;
+                            check = 0;
                         }
                     }
                 }
 
             }
         });
-
 
 
         JPanel optionPanel = new JPanel();
@@ -103,18 +110,45 @@ public class ForceDialog extends JDialog {
 
                 if(ForceTable.changed) {
                     if (check == 2) {
-                        double c = (double) tableModel.getValueAt(0, 1);
-                        double g = (double) tableModel.getValueAt(1, 1);
-                        info.put("c", c);
-                        info.put("g", g);
+                        String tVal1 = String.valueOf(tableModel.getValueAt(0, 1));
+                        String tVal2 = String.valueOf(tableModel.getValueAt(1, 1));
+
+                        if(!tVal1.isEmpty()){
+                            double c = Double.parseDouble(tVal1);
+                            info.getJSONObject("data").put("c",c);
+                        }else{
+                            info.getJSONObject("data").remove("c");
+                        }
+
+                        if(!tVal2.isEmpty()){
+                            double g = Double.parseDouble(tVal2);
+                            info.getJSONObject("data").put("g",g);
+                        }else{
+                            info.getJSONObject("data").remove("g");
+                        }
+
                     } else if (check == 1) {
-                        double G = (double) tableModel.getValueAt(0, 1);
-                        info.put("G", G);
+
+                        String tVal = String.valueOf(tableModel.getValueAt(0, 1));
+                        if(!tVal.isEmpty()) {
+                            double G = Double.parseDouble(tVal);
+                            info.getJSONObject("data").put("G", G);
+                        }else{
+                            info.getJSONObject("data").remove("G");
+                        }
                     }
+
                     ForceTable.resetC();
                 }
 
-                ctrl.setForceLaws(info);
+                try {
+                    ctrl.setForceLaws(info);
+                }catch (Exception x){
+                    JOptionPane.showMessageDialog(ForceDialog.this, "Couldn't Load Force - " + x.getMessage());
+                }finally {
+                    setV();
+                }
+
             }
         });
 
@@ -123,13 +157,13 @@ public class ForceDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
+                setV();
             }
         });
 
-        optionPanel.add(comboBox, BorderLayout.CENTER);
-        optionPanel.add(okButton, BorderLayout.PAGE_END);
-        optionPanel.add(cancelButton, BorderLayout.PAGE_END);
+        optionPanel.add(comboBox);
+        optionPanel.add(okButton);
+        optionPanel.add(cancelButton);
 
 
         paramPanel.add(new JScrollPane(paramTable));
@@ -141,10 +175,11 @@ public class ForceDialog extends JDialog {
         this.add(forceMain);
         this.pack();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        this.setVisible(true);
-
-
+        setV();
     }
 
-
+    private void setV(){
+        visible = !visible;
+        this.setVisible(visible);
+    }
 }

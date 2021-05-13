@@ -15,7 +15,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Viewer extends JPanel implements SimulatorObserver {
+public class Viewer extends JComponent implements SimulatorObserver {
 
     private Controller ctrl;
     private int centerX;
@@ -34,8 +34,8 @@ public class Viewer extends JPanel implements SimulatorObserver {
 
     private void initGUI() {
         // TODO add border with title
-        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 2),
-                "Viewer", TitledBorder.LEFT, TitledBorder.TOP));
+//        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 2),
+//                "Viewer", TitledBorder.LEFT, TitledBorder.TOP));
 
         bodies = new ArrayList<>();
         scale = 1.0;
@@ -110,7 +110,7 @@ public class Viewer extends JPanel implements SimulatorObserver {
             }
         });
 
-//        this.setSize(700, 300);
+       this.setPreferredSize(new Dimension(200,200));
     }
 
 
@@ -123,6 +123,7 @@ public class Viewer extends JPanel implements SimulatorObserver {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         // calculate the center
+        gr.drawLine(0,0,getWidth(),getHeight());
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
         // TODO draw a cross at center
@@ -169,12 +170,12 @@ public class Viewer extends JPanel implements SimulatorObserver {
         if(showHelp){
             gr.setColor(Color.red);
             gr.drawString(helpM, 0, 0);
-            gr.drawString("Scaling ratio: " + scale, 0, 1);
+            gr.drawString("Scaling ratio: " + scale, 0, 100);
         }
     }
 
 
-    private void autoScale() {
+    public void autoScale() {
         double max = 1.0;
         for (Body b : bodies) {
             Vector2D p = b.getPosition();
