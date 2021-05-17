@@ -68,10 +68,14 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         forceButton.setToolTipText("Select a Force Law to apply into the Simulator");
         forceButton.setIcon(createImageIcon("resources/icons/physics.png"));
         forceButton.setEnabled(true);
+
+        ForceDialog fc = new ForceDialog(ctrl);
+
         forceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ForceDialog(ctrl);
+                fc.setVisible(true);
+//                new ForceDialog(ctrl);
             }
         });
         buttonList.add(forceButton);

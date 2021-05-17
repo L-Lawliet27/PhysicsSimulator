@@ -11,10 +11,16 @@ import java.util.List;
 
 public class StatusBar extends JPanel implements SimulatorObserver {
 
-    private double currTime; // for current time
-    private String currLaws; // for force laws
-    private int numOfBodies; // for number of bodies
+    private JLabel timeStatus;
+    private JLabel bodyStatus;
+    private JLabel lawStatus;
+
     private JToolBar toolBar;
+
+    private final String timePrefix = "Time: ";
+    private final String bodiesPrefix = "Bodies: ";
+    private final String lawsPrefix = "Law: ";
+
 
     public StatusBar(Controller ctrl){
         initGUI();
@@ -30,44 +36,45 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         toolBar.setFloatable(false);
         this.add(toolBar, BorderLayout.PAGE_START);
 
-        JLabel time = new JLabel("Time: " + currTime);
-        time.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
-        toolBar.add(time);
+        timeStatus = new JLabel(timePrefix + 0);
+        timeStatus.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
+        toolBar.add(timeStatus);
 
-        JLabel bodies = new JLabel("Bodies: " + numOfBodies);
-        bodies.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
-        toolBar.add(bodies);
+        bodyStatus = new JLabel(bodiesPrefix + 0);
+        bodyStatus.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
+        toolBar.add(bodyStatus);
 
-        JLabel laws = new JLabel("Law: " + currLaws);
-        laws.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
-        toolBar.add(laws);
+        lawStatus = new JLabel(lawsPrefix + "NONE");
+        lawStatus.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
+        toolBar.add(lawStatus);
 
     }
 
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        currTime = time;
-        currLaws = fLawsDesc;
-        numOfBodies = bodies.size();
+        timeStatus.setText(timePrefix + time);
+        lawStatus.setText(lawsPrefix + fLawsDesc);
+        bodyStatus.setText(bodiesPrefix + bodies.size());
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        currTime = time;
-        currLaws = fLawsDesc;
-        numOfBodies = bodies.size();
+        timeStatus.setText(timePrefix + time);
+        lawStatus.setText(lawsPrefix + fLawsDesc);
+        bodyStatus.setText(bodiesPrefix + bodies.size());
     }
 
     @Override
     public void onBodyAdded(List<Body> bodies, Body b) {
-        numOfBodies = bodies.size();
+
+        bodyStatus.setText(bodiesPrefix + bodies.size());
     }
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-        currTime = time;
-        numOfBodies = bodies.size();
+        timeStatus.setText(timePrefix + time);
+        bodyStatus.setText(bodiesPrefix + bodies.size());
     }
 
     @Override
@@ -77,6 +84,6 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 
     @Override
     public void onForceLawsChanged(String fLawsDesc) {
-        currLaws = fLawsDesc;
+        lawStatus.setText(lawsPrefix + fLawsDesc);
     }
 }
