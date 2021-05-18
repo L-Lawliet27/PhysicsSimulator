@@ -99,19 +99,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
                 rowsData[i][3] = b.getVelocity();
                 rowsData[i][4] = b.getForce();
                 i++;
-            }
-
-//            for (Body b : bodyList) {
-//                for (int i = 0; i < bodyList.size(); i++) {
-//                    rowsData[i][0] = b.getId();
-//                    rowsData[i][1] = b.getMass();
-//                    rowsData[i][2] = b.getPosition();
-//                    rowsData[i][3] = b.getVelocity();
-//                    rowsData[i][4] = b.getForce();
-//                }//for
-//            }//for
-
-
+            }//foreach
         }//if
         fireTableStructureChanged();
     }

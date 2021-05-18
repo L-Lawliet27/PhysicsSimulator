@@ -17,7 +17,6 @@ import java.util.List;
 
 public class Viewer extends JComponent implements SimulatorObserver {
 
-    private Controller ctrl;
     private int centerX;
     private int centerY;
     private double scale;
@@ -34,12 +33,12 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     private void initGUI() {
         // TODO add border with title
-//        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 2),
-//                "Viewer", TitledBorder.LEFT, TitledBorder.TOP));
+        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 2),
+                "Viewer", TitledBorder.LEFT, TitledBorder.TOP));
 
         bodies = new ArrayList<>();
         scale = 1.0;
-        showHelp = true;
+        showHelp = false;
         showVectors = true;
         addKeyListener(new KeyListener() {
             @Override
@@ -72,7 +71,6 @@ public class Viewer extends JComponent implements SimulatorObserver {
                         showVectors = !showVectors;
                         repaint();
                         break;
-                    default:
                 }
             }
 
@@ -111,6 +109,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         });
 
        this.setPreferredSize(new Dimension(200,200));
+       this.setVisible(true);
     }
 
 
@@ -131,46 +130,49 @@ public class Viewer extends JComponent implements SimulatorObserver {
         gr.drawLine(centerX, centerY-1, centerX, centerY+1);
 
         // TODO draw bodies (with vectors if _showVectors is true)
-        if (showVectors){
-            for (Body b : bodies) {
-                int x = (int) b.getPosition().getX();
-                int y = (int) b.getPosition().getY();
-
-                int vx = (int) b.getVelocity().getX();
-                int vy = (int) b.getVelocity().getY();
-
-                int fx = (int) b.getForce().getX();
-                int fy = (int) b.getForce().getY();
-
-
-                gr.setColor(Color.blue);
-                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
-
-                drawLineWithArrow(gr, x, y, vx, vy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.green, Color.green);
-                drawLineWithArrow(gr, x, y, fx, fy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.red, Color.red);
-
-                gr.drawString(b.getId(), x, y+1);
-
-            }
-
-        }else{
-            for (Body b : bodies) {
-                int x = (int) b.getPosition().getX();
-                int y = (int) b.getPosition().getY();
-
-                gr.setColor(Color.blue);
-                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
-                gr.drawString(b.getId(), x, y+1);
-
-            }
-        }
-
-        // TODO draw help if _showHelp is true
-
+//        if (showVectors){
+//            for (Body b : bodies) {
+//                int x = (int) b.getPosition().getX();
+//                int y = (int) b.getPosition().getY();
+//
+//                int vx = (int) b.getVelocity().getX();
+//                int vy = (int) b.getVelocity().getY();
+//
+//                int fx = (int) b.getForce().getX();
+//                int fy = (int) b.getForce().getY();
+//
+//
+//                gr.setColor(Color.blue);
+//                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
+//
+//                drawLineWithArrow(gr, x, y, vx, vy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.green, Color.green);
+//                drawLineWithArrow(gr, x, y, fx, fy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.red, Color.red);
+//
+//                gr.drawString(b.getId(), x, y+1);
+//
+//            }
+//
+//        }else{
+//            for (Body b : bodies) {
+//                int x = (int) b.getPosition().getX();
+//                int y = (int) b.getPosition().getY();
+//
+//                gr.setColor(Color.blue);
+//                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
+//                gr.drawString(b.getId(), x, y+1);
+//
+//            }
+//        }
+//
+//        // TODO draw help if _showHelp is true
+//
         if(showHelp){
             gr.setColor(Color.red);
-            gr.drawString(helpM, 0, 0);
-            gr.drawString("Scaling ratio: " + scale, 0, 100);
+            int helpX = getWidth()/30;
+            int helpY = getHeight()/7;
+            int ratioY = getHeight()/5;
+            gr.drawString(helpM, helpX, helpY);
+            gr.drawString("Scaling ratio: " + scale, helpX, ratioY);
         }
     }
 
