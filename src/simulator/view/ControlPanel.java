@@ -75,7 +75,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         forceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fc.setVisible(true);
+                fc.setV();
 //                new ForceDialog(ctrl);
             }
         });

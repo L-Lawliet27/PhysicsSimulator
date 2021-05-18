@@ -25,7 +25,7 @@ public class ForceDialog extends JDialog {
 //        super(parent, true);
         ctrl = controller;
         check = 0;
-        visible = false;
+        visible = true;
         initGUI();
     }
 
@@ -153,11 +153,11 @@ public class ForceDialog extends JDialog {
         this.add(forceMain);
         this.pack();
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.setVisible(false);
-//        setV();
+//        this.setVisible(false);
+        setV();
     }
 
-    private void setV(){
+    public void setV(){
         visible = !visible;
         this.setVisible(visible);
     }
@@ -167,8 +167,9 @@ public class ForceDialog extends JDialog {
         if(!tVal.isEmpty()) {
             double val = Double.parseDouble(tVal);
             info.getJSONObject("data").put(jsonKey, val);
-        }else{
-            info.getJSONObject("data").remove(jsonKey);
+        }
+        else{
+            info.getJSONObject("data").put(jsonKey, tVal);
         }
     }
 }
