@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         bodies = new ArrayList<>();
         scale = 1.0;
         showHelp = false;
-        showVectors = true;
+        showVectors = false;
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -122,50 +123,59 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         // calculate the center
-        gr.drawLine(0,0,getWidth(),getHeight());
+//        gr.drawLine(0,0,getWidth(),getHeight());
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
         // TODO draw a cross at center
-        gr.drawLine(centerX-1, centerY, centerX+1, centerY);
-        gr.drawLine(centerX, centerY-1, centerX, centerY+1);
+        gr.setColor(Color.red);
+        gr.drawLine(centerX-5, centerY, centerX+5, centerY);
+        gr.setColor(Color.red);
+        gr.drawLine(centerX, centerY-5, centerX, centerY+5);
 
         // TODO draw bodies (with vectors if _showVectors is true)
-//        if (showVectors){
-//            for (Body b : bodies) {
-//                int x = (int) b.getPosition().getX();
-//                int y = (int) b.getPosition().getY();
-//
-//                int vx = (int) b.getVelocity().getX();
-//                int vy = (int) b.getVelocity().getY();
-//
-//                int fx = (int) b.getForce().getX();
-//                int fy = (int) b.getForce().getY();
-//
-//
-//                gr.setColor(Color.blue);
-//                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
-//
-//                drawLineWithArrow(gr, x, y, vx, vy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.green, Color.green);
-//                drawLineWithArrow(gr, x, y, fx, fy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.red, Color.red);
-//
-//                gr.drawString(b.getId(), x, y+1);
-//
-//            }
-//
-//        }else{
-//            for (Body b : bodies) {
-//                int x = (int) b.getPosition().getX();
-//                int y = (int) b.getPosition().getY();
-//
-//                gr.setColor(Color.blue);
-//                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
-//                gr.drawString(b.getId(), x, y+1);
-//
-//            }
-//        }
-//
-//        // TODO draw help if _showHelp is true
-//
+        if (showVectors){
+            for (Body b : bodies) {
+                int x = (int) b.getPosition().getX();
+                int y = (int) b.getPosition().getY();
+
+                int vx = (int) b.getVelocity().getX();
+                int vy = (int) b.getVelocity().getY();
+
+                int fx = (int) b.getForce().getX();
+                int fy = (int) b.getForce().getY();
+
+
+                gr.setColor(Color.blue);
+                gr.fillOval(x, y, centerX + (int) (x/scale), centerY + (int) (y/scale));
+
+
+                drawLineWithArrow(gr, x, y, vx, vy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.green, Color.green);
+                drawLineWithArrow(gr, x, y, fx, fy, centerX + (int) (x/scale), centerY + (int) (y/scale), Color.red, Color.red);
+
+                gr.drawString(b.getId(), x, y+1);
+
+            }
+
+        }else{
+            for (Body b : bodies) {
+               Vector2D bodyPos = b.getPosition();
+                double xScaled = bodyPos.getX()/scale;
+                double yScaled = bodyPos.getY()/scale;
+                int xPosition = (int) xScaled;
+                int yPosition = (int) yScaled;
+                int x = centerX + xPosition;
+                int y = centerY - yPosition;
+
+
+                gr.setColor(Color.blue);
+                gr.fillOval(x, y, 10, 10);
+
+                gr.drawString(b.getId(), x, y);
+
+            }
+        }
+
+
         if(showHelp){
             gr.setColor(Color.red);
             int helpX = getWidth()/30;
@@ -226,7 +236,6 @@ public class Viewer extends JComponent implements SimulatorObserver {
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
         this.bodies.clear();
-        this.bodies.addAll(bodies);
         autoScale();
         repaint();
     }
