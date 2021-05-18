@@ -49,8 +49,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         //File Button
         fChoose = new JFileChooser();
-        File currDirectory = new File(ControlPanel.class.getResource("./").getPath());
-        fChoose.setCurrentDirectory(currDirectory);
+
+        File resources = new File("resources");
+        fChoose.setCurrentDirectory(resources);
 
         fileButton = new JButton();
         fileButton.setToolTipText("Select a File to Load into the Simulator");
