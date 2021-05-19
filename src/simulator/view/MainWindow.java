@@ -38,7 +38,7 @@ public class MainWindow extends JFrame {
 
         //Viewer---------------------------------------------------
         Viewer viewer = new Viewer(ctrl);
-        boxPanel.add(viewer);
+        boxPanel.add(new JScrollPane(viewer));
         //Viewer---------------------------------------------------
 
         //Status Bar-----------------------------------------------

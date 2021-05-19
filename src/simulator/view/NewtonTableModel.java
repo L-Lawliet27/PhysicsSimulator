@@ -7,12 +7,12 @@ public class NewtonTableModel extends ForceTableModel {
         this.setValueAt("G",0,0);
         this.setValueAt("",0,1);
         this.setValueAt(descr,0,2);
+
     }
 
-    public void setValue(Object aValue) {
-        this.setValueAt(aValue, 0, 1);
-        changed = true;
-    }
+//    public void setValue(Object aValue) {
+//        this.setValueAt(aValue, 0, 1);
+//    }
 
     public String getValue() {
         return String.valueOf(super.getValueAt(0,1));

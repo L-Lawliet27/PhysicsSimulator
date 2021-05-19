@@ -14,15 +14,13 @@ public class MovingTableModel extends ForceTableModel {
 
     }
 
-    public void setValueC(Object aValue) {
-        this.setValueAt(aValue, 0, 1);
-        changed = true;
-    }
-
-    public void setValueG(Object aValue){
-        this.setValueAt(aValue,1,1);
-        changed = true;
-    }
+//    public void setValueC(Object aValue) {
+//        this.setValueAt(aValue, 0, 1);
+//    }
+//
+//    public void setValueG(Object aValue){
+//        this.setValueAt(aValue,1,1);
+//    }
 
     public String getValueC() {
         return String.valueOf(super.getValueAt(0,1));
