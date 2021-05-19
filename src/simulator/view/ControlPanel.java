@@ -213,7 +213,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        deltaTimeField.setText(String.valueOf(dt));
+//        deltaTimeField.setText(String.valueOf(dt));
     }
 
     @Override

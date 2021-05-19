@@ -34,15 +34,19 @@ public class ForceDialog extends JDialog {
         JPanel forceMain = new JPanel(new BorderLayout());
 
         JPanel desc = new JPanel();
-        desc.add(new JLabel("Select a Force Law and Provide Values for the Parameters in the Value Column"));
+        desc.add(new JLabel("Select a Force Law and Provide Values for the Parameters in the Value Column (default values are used" +
+                "for parameters with no value)"));
         forceMain.add(desc, BorderLayout.PAGE_START);
 
 
-        JPanel paramPanel = new JPanel();
+//        JPanel paramPanel = new JPanel();
 
         JTable noForceTable = new JTable(new NoForceTableModel()); //Basically, a placeholder
-        JScrollPane scrollPane = new JScrollPane(noForceTable);
+
+        JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setViewportView(noForceTable);
         scrollPane.setPreferredSize(new Dimension(300,200));
+
 //        JTable paramTable = new JTable(tableModel);
 //        paramTable.setPreferredSize();
 
@@ -145,9 +149,9 @@ public class ForceDialog extends JDialog {
         optionPanel.add(cancelButton);
 
 
-        paramPanel.add(scrollPane);
-        forceMain.add(new JScrollPane(paramPanel), BorderLayout.CENTER);
-        forceMain.add(optionPanel, BorderLayout.PAGE_END);
+//        paramPanel.add(scrollPane);
+        forceMain.add(scrollPane, BorderLayout.CENTER);
+        forceMain.add(new JScrollPane(optionPanel), BorderLayout.PAGE_END);
         forceMain.setVisible(true);
 
         this.add(forceMain);
