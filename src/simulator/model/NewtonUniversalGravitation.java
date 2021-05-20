@@ -14,11 +14,10 @@ public class NewtonUniversalGravitation implements ForceLaws{
 
     @Override
     public void apply(List<Body> bs) {
-
-        for (Body o : bs) {
-            for (Body b : bs) {
-                if (!b.equals(o.getId()))
-                    o.addForce(forceApplied(b, o));
+        for (Body b1 : bs) {
+            for (Body b2 : bs) {
+                if (!b2.equals(b1.getId()))
+                    b1.addForce(forceApplied(b2, b1));
             }//foreach
         }//foreach
 
@@ -31,8 +30,8 @@ public class NewtonUniversalGravitation implements ForceLaws{
         if(dis > 0){
             f = fResult(b2, b1, dis);
         }
-        Vector2D vDir = vectorDirection(b2,b1).direction();
-        return vDir.scale(f);
+        Vector2D vDir = vectorDirection(b2,b1);
+        return vDir.direction().scale(f);
     }
 
     private double operation(Body b2, Body b1){
@@ -45,7 +44,9 @@ public class NewtonUniversalGravitation implements ForceLaws{
     private double fResult(Body b2, Body b1, double dis){
         double mB2 = b2.getMass();
         double mB1 = b1.getMass();
-        return g * ( (mB2 * mB1) / dis );
+        double mass = mB1 * mB2;
+        double dM = mass/dis;
+        return g * dM;
     }
 
     private Vector2D vectorDirection(Body b2, Body b1){

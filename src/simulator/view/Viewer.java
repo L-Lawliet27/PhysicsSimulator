@@ -134,17 +134,23 @@ public class Viewer extends JComponent implements SimulatorObserver {
         gr.drawLine(centerX, centerY-5, centerX, centerY+5);
 
         // TODO draw bodies (with vectors if _showVectors is true)
-        if (showVectors){
-            for (Body b : bodies) {
+        for (Body b : bodies) {
 
-                Vector2D bodyPos = b.getPosition();
-                double xScaled = bodyPos.getX()/scale;
-                double yScaled = bodyPos.getY()/scale;
-                int xPosition = (int) xScaled;
-                int yPosition = (int) yScaled;
-                int x = centerX + xPosition;
-                int y = centerY - yPosition;
+            Vector2D bodyPos = b.getPosition().scale(1/scale);
+            double xScaled = bodyPos.getX(); // scale;
+            double yScaled = bodyPos.getY(); // scale;
+            int xPosition = (int) xScaled;
+            int yPosition = (int) yScaled;
+            int x = centerX + xPosition;
+            int y = centerY - yPosition;
 
+            //Draw Body
+            gr.setColor(Color.blue);
+            gr.fillOval(x, y, 10, 10);
+            gr.drawString(b.getId(), x, y);
+            //Draw Body
+
+            if (showVectors) {
                 Vector2D bodyVel = b.getVelocity().direction().scale(20);
                 double xVel = bodyVel.getX();
                 double yVel = bodyVel.getY();
@@ -157,36 +163,13 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 int fx = (int) xFor;
                 int fy = (int) yFor;
 
-                //Draw Body
-                gr.setColor(Color.blue);
-                gr.fillOval(x, y, 10, 10);
-                gr.drawString(b.getId(), x, y);
-                //Draw Body
-
                 //Draw Velocity Arrow
-                drawLineWithArrow(gr, x, y, vx+x, vy+y, 5, 5, Color.green, Color.green);
+                drawLineWithArrow(gr, x, y, x + vx, y - vy, 5, 5, Color.green, Color.green);
                 //Draw Velocity Arrow
 
                 //Draw Force Arrow
-                drawLineWithArrow(gr, x, y, fx+x, fy+y, 5, 5, Color.red, Color.red);
+                drawLineWithArrow(gr, x, y, x + fx, y - fy, 5, 5, Color.red, Color.red);
                 //Draw Force Arrow
-            }
-
-        }else{
-            for (Body b : bodies) {
-                Vector2D bodyPos = b.getPosition();
-                double xScaled = bodyPos.getX()/scale;
-                double yScaled = bodyPos.getY()/scale;
-                int xPosition = (int) xScaled;
-                int yPosition = (int) yScaled;
-                int x = centerX + xPosition;
-                int y = centerY - yPosition;
-
-                //Draw Body
-                gr.setColor(Color.blue);
-                gr.fillOval(x, y, 10, 10);
-                gr.drawString(b.getId(), x, y);
-                //Draw Body
             }
         }
 

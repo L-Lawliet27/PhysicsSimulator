@@ -6,7 +6,7 @@ import simulator.model.NewtonUniversalGravitation;
 
 public class NewtonUniversalGravitationBuilder<T> extends Builder<ForceLaws> {
 
-    private double g = 6.67e10-11;
+    private double g = 6.67e-11;
     private final String desc="Newton’s law of universal gravitation";
     private final String typeDesc="nlug";
 
