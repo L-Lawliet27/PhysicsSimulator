@@ -1,3 +1,7 @@
+---------------------------------------
+Changes From Comments
+---------------------------------------
+
 model
 =====
 
@@ -45,3 +49,15 @@ launcher
 
 # Main.java:
 - set System.out as the default value for output
+
+
+---------------------------------------
+Changes While Implementing GUI
+---------------------------------------
+
+# NewtonUniversalGravitationBuilder.java:
+- fixed Constant g
+- added extra condition in IF of method instanceOf()
+
+# MovingTowardsFixedPointBuilder.java:
+- added extra condition in IF of method instanceOf()

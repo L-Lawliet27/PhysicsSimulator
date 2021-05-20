@@ -123,15 +123,17 @@ public class Viewer extends JComponent implements SimulatorObserver {
         gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         // calculate the center
-//        gr.drawLine(0,0,getWidth(),getHeight());
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
 
+        //Draw Cross in Center
         gr.setColor(Color.red);
         gr.drawLine(centerX-5, centerY, centerX+5, centerY);
         gr.setColor(Color.red);
         gr.drawLine(centerX, centerY-5, centerX, centerY+5);
+        //Draw Cross in Center
 
         for (Body b : bodies) {
 
