@@ -127,13 +127,12 @@ public class Viewer extends JComponent implements SimulatorObserver {
 //        gr.drawLine(0,0,getWidth(),getHeight());
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
-        // TODO draw a cross at center
+
         gr.setColor(Color.red);
         gr.drawLine(centerX-5, centerY, centerX+5, centerY);
         gr.setColor(Color.red);
         gr.drawLine(centerX, centerY-5, centerX, centerY+5);
 
-        // TODO draw bodies (with vectors if _showVectors is true)
         for (Body b : bodies) {
 
             Vector2D bodyPos = b.getPosition().scale(1/scale);

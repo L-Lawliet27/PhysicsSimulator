@@ -21,7 +21,7 @@ public class MovingTowardsFixedPointBuilder<T> extends Builder<ForceLaws> {
     @Override
     protected ForceLaws instanceOf(JSONObject data) {
 
-        if(data.has("c") && !data.get("c").equals("")) {
+        if(data.has("c") && !data.getJSONArray("c").isEmpty()) {
             JSONArray ar = data.getJSONArray("c");
 
             double x = ar.getDouble(0);

@@ -1,5 +1,6 @@
 package simulator.view;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.control.Controller;
 
@@ -114,10 +115,14 @@ public class ForceDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
 
                 if (check == 2) {
-                    String tVal1 = movingTableModel.getValueC();
+                    JSONArray tVal1 = movingTableModel.getValueC();
                     String tVal2 = movingTableModel.getValueG();
-
-                    setJsonData(tVal1,"c");
+                    try {
+                        setJsonData(tVal1, "c");
+                    }catch (Exception j){
+                        JOptionPane.showMessageDialog(ForceDialog.this, "c can't have more than 2 Values");
+                        return;
+                    }
                     setJsonData(tVal2,"g");
 
                 } else if (check == 1) {
@@ -168,12 +173,14 @@ public class ForceDialog extends JDialog {
 
 
     private void setJsonData(String tVal, String jsonKey){
-        if(!tVal.isEmpty()) {
-            double val = Double.parseDouble(tVal);
-            info.getJSONObject("data").put(jsonKey, val);
-        }
-        else{
-            info.getJSONObject("data").put(jsonKey, tVal);
+        info.getJSONObject("data").put(jsonKey, tVal);
+    }
+
+    private void setJsonData(JSONArray jVal, String jsonKey) {
+        if (jVal.length() > 2 ) {
+            throw new IllegalArgumentException();
+        } else {
+            info.getJSONObject("data").put(jsonKey, jVal);
         }
     }
 }

@@ -1,5 +1,8 @@
 package simulator.view;
 
+import org.json.JSONArray;
+import simulator.misc.Vector2D;
+
 public class MovingTableModel extends ForceTableModel {
 
     public MovingTableModel(String cDescr, String gDescr){
@@ -22,8 +25,13 @@ public class MovingTableModel extends ForceTableModel {
 //        this.setValueAt(aValue,1,1);
 //    }
 
-    public String getValueC() {
-        return String.valueOf(super.getValueAt(0,1));
+    public JSONArray getValueC() {
+        String val = String.valueOf(super.getValueAt(0,1)).replace("[","").replace("]","");
+        String[] value = val.split(",");
+        if(value.length==1 && value[0].equals("")){
+            return new JSONArray();
+        }
+        return new JSONArray(value);
     }
 
     public String getValueG() {
