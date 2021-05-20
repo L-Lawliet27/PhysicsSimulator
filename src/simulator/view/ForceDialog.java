@@ -120,7 +120,7 @@ public class ForceDialog extends JDialog {
                     try {
                         setJsonData(tVal1, "c");
                     }catch (Exception j){
-                        JOptionPane.showMessageDialog(ForceDialog.this, "c can't have more than 2 Values");
+                        JOptionPane.showMessageDialog(ForceDialog.this, "c Can't Have more than 2 Values", "Arguments Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     setJsonData(tVal2,"g");
@@ -133,7 +133,8 @@ public class ForceDialog extends JDialog {
                 try {
                     ctrl.setForceLaws(info);
                 }catch (Exception x){
-                    JOptionPane.showMessageDialog(ForceDialog.this, "Couldn't Load Force - " + x.getMessage());
+                    JOptionPane.showMessageDialog(ForceDialog.this, "Couldn't Load Force - " + x.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }finally {
                     setV();
                 }//finally
