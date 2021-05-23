@@ -74,7 +74,6 @@ public class StatusBar extends JPanel implements SimulatorObserver {
     @Override
     public void onAdvance(List<Body> bodies, double time) {
         timeStatus.setText(timePrefix + time);
-        bodyStatus.setText(bodiesPrefix + bodies.size());
     }
 
     @Override

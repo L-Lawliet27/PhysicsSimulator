@@ -19,6 +19,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     public BodiesTableModel(Controller controller){
         bodyList = new ArrayList<>();
+        updateRowsData();
         controller.addObserver(this);
     }
 
@@ -43,7 +44,11 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return rowsData[rowIndex][columnIndex];
+        if(rowsData.length==0){
+            return "";
+        }
+        else
+            return rowsData[rowIndex][columnIndex];
     }
 
 

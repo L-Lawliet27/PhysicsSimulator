@@ -61,3 +61,17 @@ Changes While Implementing GUI
 
 # MovingTowardsFixedPointBuilder.java:
 - added extra condition in IF of method instanceOf()
+
+
+---------------------------------------
+Changes From Comments #2
+---------------------------------------
+
+Status Bar
+===========
+- Took out the Body Status onAdvance()
+
+
+Main/BodiesTableModel
+=====================
+- Changed getValueAt() so that if rowsData.length==0, it returns "", thus not adding -i doesn't throw an exception
