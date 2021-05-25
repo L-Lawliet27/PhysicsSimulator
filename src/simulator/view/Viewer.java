@@ -165,11 +165,11 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 int fy = (int) yFor;
 
                 //Draw Velocity Arrow
-                drawLineWithArrow(gr, x, y, x + vx, y - vy, 5, 5, Color.green, Color.green);
+                drawLineWithArrow(gr, x+4, y+4, x + vx, y - vy, 5, 5, Color.green, Color.green);
                 //Draw Velocity Arrow
 
                 //Draw Force Arrow
-                drawLineWithArrow(gr, x, y, x + fx, y - fy, 5, 5, Color.red, Color.red);
+                drawLineWithArrow(gr, x+4, y+4, x + fx, y - fy, 5, 5, Color.red, Color.red);
                 //Draw Force Arrow
             }
         }
