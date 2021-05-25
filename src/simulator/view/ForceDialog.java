@@ -1,6 +1,5 @@
 package simulator.view;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.control.Controller;
 
@@ -13,19 +12,14 @@ public class ForceDialog extends JDialog {
 
     private Controller ctrl;
     private JSONObject info;
-    private int check;
     private boolean visible;
 
-    private NewtonTableModel newtonTableModel;
-    private MovingTableModel movingTableModel;
-
-
+    private JTable forceTable;
+    private ForceTableModel forceTableModel;
     private JComboBox<String> comboBox;
 
     public ForceDialog(Controller controller){
-//        super(parent, true);
         ctrl = controller;
-        check = 0;
         visible = true;
         initGUI();
     }
@@ -40,64 +34,33 @@ public class ForceDialog extends JDialog {
         forceMain.add(desc, BorderLayout.PAGE_START);
 
 
-//        JPanel paramPanel = new JPanel();
-
-        JTable noForceTable = new JTable(new NoForceTableModel()); //Basically, a placeholder
+        forceTableModel = new ForceTableModel();
+        forceTable = new JTable(forceTableModel);
 
         JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setViewportView(noForceTable);
+        scrollPane.setViewportView(forceTable);
         scrollPane.setPreferredSize(new Dimension(300,200));
-
-//        JTable paramTable = new JTable(tableModel);
-//        paramTable.setPreferredSize();
-
 
         comboBox = new JComboBox<>();
 
         for (JSONObject f: ctrl.getForceLawsInfo()) {
             comboBox.addItem(f.get("desc").toString());
-
-            JSONObject fd = f.getJSONObject("data");
-
-            if(fd.has("G")){
-                newtonTableModel = new NewtonTableModel(fd.get("G").toString());
-            }
-
-            if(fd.has("c") && fd.has("g")){
-                movingTableModel = new MovingTableModel(fd.get("c").toString(), fd.get("g").toString());
-            }
         }
-
-        JTable newtonTable = new JTable(newtonTableModel);
-        JTable movingFixedTable = new JTable(movingTableModel);
 
         comboBox.setSelectedIndex(2);
 
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 @SuppressWarnings("unchecked")
                 JComboBox<String> auxBox = (JComboBox<String>) e.getSource();
                 Object selectedForce = auxBox.getSelectedItem();
 
                 for (JSONObject f : ctrl.getForceLawsInfo()) {
                     assert selectedForce != null;
-
                     if(selectedForce.equals(f.get("desc").toString())){
-                        JSONObject fd = f.getJSONObject("data");
-
-                        if(fd.has("G")) {
-                            scrollPane.setViewportView(newtonTable);
-                            check = 1;
-
-                        }else if (fd.has("c") && fd.has("g")) {
-                            scrollPane.setViewportView(movingFixedTable);
-                            check = 2;
-                        }else{
-                            scrollPane.setViewportView(noForceTable);
-                            check = 0;
-                        }
+                        forceTableModel = new ForceTableModel(f);
+                        forceTable.setModel(forceTableModel);
                         info = f;
                     }//if
                 }//for
@@ -113,32 +76,16 @@ public class ForceDialog extends JDialog {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (check == 2) {
-                    JSONArray tVal1 = movingTableModel.getValueC();
-                    String tVal2 = movingTableModel.getValueG();
-                    try {
-                        setJsonData(tVal1, "c");
-                    }catch (Exception j){
-                        JOptionPane.showMessageDialog(ForceDialog.this, "c Can't Have more than 2 Values", "Arguments Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    setJsonData(tVal2,"g");
-
-                } else if (check == 1) {
-                    String tVal = newtonTableModel.getValue();
-                    setJsonData(tVal,"G");
-                }
-
                 try {
-                    ctrl.setForceLaws(info);
+                    JSONObject force = forceTableModel.setValues(info);
+                    ctrl.setForceLaws(force);
                 }catch (Exception x){
                     JOptionPane.showMessageDialog(ForceDialog.this, "Couldn't Load Force - " + x.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);
-                }finally {
+                } finally {
                     setV();
                 }//finally
-            }//actionperformed
+            }//actionPerformed
         });
 
         JButton cancelButton = new JButton("Cancel");
@@ -154,8 +101,6 @@ public class ForceDialog extends JDialog {
         optionPanel.add(okButton);
         optionPanel.add(cancelButton);
 
-
-//        paramPanel.add(scrollPane);
         forceMain.add(scrollPane, BorderLayout.CENTER);
         forceMain.add(new JScrollPane(optionPanel), BorderLayout.PAGE_END);
         forceMain.setVisible(true);
@@ -163,7 +108,6 @@ public class ForceDialog extends JDialog {
         this.add(forceMain);
         this.pack();
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-//        this.setVisible(false);
         setV();
     }
 
@@ -173,15 +117,4 @@ public class ForceDialog extends JDialog {
     }
 
 
-    private void setJsonData(String tVal, String jsonKey){
-        info.getJSONObject("data").put(jsonKey, tVal);
-    }
-
-    private void setJsonData(JSONArray jVal, String jsonKey) {
-        if (jVal.length() > 2 ) {
-            throw new IllegalArgumentException();
-        } else {
-            info.getJSONObject("data").put(jsonKey, jVal);
-        }
-    }
 }

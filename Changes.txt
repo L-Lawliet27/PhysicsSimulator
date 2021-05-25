@@ -76,7 +76,9 @@ Main/BodiesTableModel
 =====================
 - Defined an initial length to rowData so it returns "", thus not adding -i doesn't throw an exception
 
-- Eliminated the private List of Bodies, so I just pass it locally to updateTable()
+- Added method advanceTable(), which only updates the data of the 2 to 4 row and calls fireTableDataChanged()
+
+- Eliminated the private List of Bodies, so I just pass it locally to updateTable() and advanceTable()
 
 - Added private int rowCount with default value 1, and private method updateRowCount() that is called when
   table resets, is on register, or when a body is added
@@ -85,3 +87,16 @@ Main/BodiesTableModel
 Viewer
 =======
 - Added 4 to the starting points of the vectors to put them in the center of the body
+
+
+ForceDialog
+===========
+-Deleted the three tableModels for the Forces, and implemented a single tableModel, ForceTableModel
+
+-Optimized the code so to only use ForceTableModel and a single instance of forceTable
+
+
+ForceTableModel
+===============
+-Refactored the code to process each law, thus using giving way to add additional laws without much refactoring,
+ which would be in the setValues() method
