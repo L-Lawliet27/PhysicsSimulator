@@ -62,7 +62,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-        updateTable(bodies);
+        advanceTable(bodies);
     }
 
     @Override
@@ -75,6 +75,10 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     }
 
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        super.setValueAt(aValue, rowIndex, columnIndex);
+    }
 
     private void updateTable(List<Body> bodyList){
         if(!bodyList.isEmpty()) {
@@ -89,6 +93,20 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
             }//foreach
         }//if
         fireTableStructureChanged();
+    }
+
+    private void advanceTable(List<Body> bodyList){
+        if(!bodyList.isEmpty()) {
+            int i = 0;
+            for (Body b : bodyList) {
+                rowsData[i][1] = b.getMass();
+                rowsData[i][2] = b.getPosition();
+                rowsData[i][3] = b.getVelocity();
+                rowsData[i][4] = b.getForce();
+                i++;
+            }//foreach
+        }//if
+        fireTableDataChanged();
     }
 
     private void updateRowCount(List<Body> bodyList){
