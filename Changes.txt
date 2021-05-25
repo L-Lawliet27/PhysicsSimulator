@@ -74,4 +74,14 @@ Status Bar
 
 Main/BodiesTableModel
 =====================
-- Changed getValueAt() so that if rowsData.length==0, it returns "", thus not adding -i doesn't throw an exception
+- Defined an initial length to rowData so it returns "", thus not adding -i doesn't throw an exception
+
+- Eliminated the private List of Bodies, so I just pass it locally to updateTable()
+
+- Added private int rowCount with default value 1, and private method updateRowCount() that is called when
+  table resets, is on register, or when a body is added
+
+
+Viewer
+=======
+- Added 4 to the starting points of the vectors to put them in the center of the body
