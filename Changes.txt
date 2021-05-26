@@ -74,7 +74,7 @@ Status Bar
 
 Main/BodiesTableModel
 =====================
-- Defined an initial length to rowData so it returns "", thus not adding -i doesn't throw an exception
+- In case the data is empty, it returns "", thus not adding -i doesn't throw an exception
 
 - Added method advanceTable(), which only updates the data of the 2 to 4 row and calls fireTableDataChanged()
 
@@ -82,6 +82,8 @@ Main/BodiesTableModel
 
 - Added private int rowCount with default value 1, and private method updateRowCount() that is called when
   table resets, is on register, or when a body is added
+
+- Eliminated rowData double-array and instead implemented a Map<Integer, Vector<Object>> [rData]
 
 
 Viewer
