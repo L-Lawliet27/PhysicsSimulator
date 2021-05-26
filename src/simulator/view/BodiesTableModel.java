@@ -5,18 +5,18 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.List;
+import java.util.*;
 
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
-    private Object[][] rowsData;
     private int rowCount;
     private final String[] columnsNm = {"ID", "Mass", "Position", "Velocity", "Force"};
     private final int columnLength = columnsNm.length;
+    private Map<Integer, Vector<Object>> rData;
 
     public BodiesTableModel(Controller controller){
         rowCount = 1;
-        rowsData = new Object[20][columnLength];
+        rData = new HashMap<>();
         controller.addObserver(this);
     }
 
@@ -27,7 +27,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public int getColumnCount() {
-        return columnsNm.length;
+        return columnLength;
     }
 
     @Override
@@ -37,7 +37,10 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-            return rowsData[rowIndex][columnIndex];
+
+        if(rData.isEmpty()) return "";
+
+        return rData.get(rowIndex).get(columnIndex);
     }
 
 
@@ -49,7 +52,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        rowsData = new Object[20][columnLength];
+        rData.clear();
         updateRowCount(bodies);
         updateTable(bodies);
     }
@@ -83,12 +86,17 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
     private void updateTable(List<Body> bodyList){
         if(!bodyList.isEmpty()) {
             int i = 0;
+
             for (Body b : bodyList) {
-                rowsData[i][0] = b.getId();
-                rowsData[i][1] = b.getMass();
-                rowsData[i][2] = b.getPosition();
-                rowsData[i][3] = b.getVelocity();
-                rowsData[i][4] = b.getForce();
+                Vector<Object> data = new Vector<>();
+
+                data.add(b.getId());
+                data.add(b.getMass());
+                data.add(b.getPosition());
+                data.add(b.getVelocity());
+                data.add(b.getForce());
+
+                rData.put(i,data);
                 i++;
             }//foreach
         }//if
@@ -99,10 +107,11 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         if(!bodyList.isEmpty()) {
             int i = 0;
             for (Body b : bodyList) {
-                rowsData[i][1] = b.getMass();
-                rowsData[i][2] = b.getPosition();
-                rowsData[i][3] = b.getVelocity();
-                rowsData[i][4] = b.getForce();
+                rData.get(i).set(1, b.getMass());
+                rData.get(i).set(2, b.getPosition());
+                rData.get(i).set(3, b.getVelocity());
+                rData.get(i).set(4, b.getForce());
+
                 i++;
             }//foreach
         }//if
